@@ -2,46 +2,41 @@
   "name": "cross_exchange_arb_visualizer",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.js",
-  "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "maintained node versions",
-    "not dead"
-  ],
+  "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "webpack:build": "webpack --config webpack.prod.js  --optimize-minimize"
+    "start": "webpack serve --mode development"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dabaojian1992/cross_exchange_arb_visualizer.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.13.1",
-    "@babel/preset-env": "^7.13.0",
-    "autoprefixer": "^10.0.4",
-    "babel-loader": "^8.2.2",
-    "css-loader": "^5.0.1",
-    "file-loader": "^6.2.0",
-    "node-sass": "^5.0.0",
-    "postcss-loader": "^4.1.0",
-    "sass": "^1.30.0",
-    "sass-loader": "^10.1.0",
-    "style-loader": "^2.0.0",
-    "url-loader": "^4.1.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2",
-    "@babel/preset-react": "^7.13.13"
+  "bugs": {
+    "url": "https://github.com/dabaojian1992/cross_exchange_arb_visualizer/issues"
   },
+  "homepage": "https://github.com/dabaojian1992/cross_exchange_arb_visualizer#readme",
   "dependencies": {
-    "bufferutil": "^4.0.3",
-    "ccxws": "^0.43.1",
-    "fibers": "^5.0.0",
-    "mini-css-extract-plugin": "^1.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "utf-8-validate": "^5.0.5"
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.0",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "bufferutil": "^4.0.3",
+    "ccxws": "^0.43.1",
+    "css-loader": "^5.2.4",
+    "fibers": "^5.0.0",
+    "file-loader": "^6.2.0",
+    "install": "^0.13.0",
+    "node-sass": "^5.0.0",
+    "sass": "^1.32.12",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "utf-8-validate": "^5.0.5",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
