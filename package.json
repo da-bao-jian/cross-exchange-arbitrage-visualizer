@@ -36,8 +36,12 @@
     "@babel/preset-react": "^7.13.13"
   },
   "dependencies": {
+    "bufferutil": "^4.0.3",
+    "ccxws": "^0.43.1",
+    "fibers": "^5.0.0",
     "mini-css-extract-plugin": "^1.6.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "utf-8-validate": "^5.0.5"
   }
 }
