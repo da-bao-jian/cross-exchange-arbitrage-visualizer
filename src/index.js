@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
 
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.getElementById("root");
-  ReactDOM.render(<div>Welcome</div>, root);
+  ReactDOM.render(<div>hey</div>, root);
 });
 
 // If you want to start measuring performance in your app, pass a function

@@ -5,9 +5,11 @@ const outputDir = "./dist";
 module.exports = {
   entry: path.resolve(__dirname, "src", "index.js"), //
   output: {
-    path: path.join(__dirname, outputDir),
-    filename: "[name].js",
-    publicPath: "/dist/",
+    // path: path.join(__dirname, outputDir),
+    // filename: "[name].js",
+    // publicPath: "/dist/",
+    filename: "bundle.js"
+
   },
   resolve: {
     extensions: [".wasm", ".ts", ".tsx", ".mjs", ".cjs", ".js", ".json", '.jsx'], 

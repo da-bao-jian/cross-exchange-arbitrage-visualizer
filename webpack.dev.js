@@ -6,7 +6,7 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    contentBase: path.resolve(__dirname ,"./public"),
+    contentBase: path.resolve(__dirname ,"./src"),
     watchContentBase: true,
     open: "Chrome", // use "chrome" for PC
   },
