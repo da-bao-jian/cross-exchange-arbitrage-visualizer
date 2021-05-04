@@ -1,12 +1,19 @@
 import React from 'react';
-
-
+import OrderBook from './ob';
+import Searchbar from './searchbar';
+import './App.scss'
 
 const App = () => {
-    // const binance = new ccxws.Binance();
+    const _SUPPORTED_CURRENCIES = [];
 
-    render( 
-        <div>hey</div>  
-)};
+    return (
+        <div>
+            <h2>Crypto Order Book </h2>
+            <Searchbar /> 
+            <OrderBook />
+        </div>
+    );
+};
+
 
 export default App;

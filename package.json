@@ -2,10 +2,12 @@
   "name": "cross_exchange_arb_visualizer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.js", 
+
   "scripts": {
     "start": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "server": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,11 @@
     "utf-8-validate": "^5.0.5",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "socket.io": "^3.0.3",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
