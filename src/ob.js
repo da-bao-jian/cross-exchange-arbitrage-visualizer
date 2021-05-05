@@ -1,124 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { Observable } from 'rxjs';
 import { map, tap, retryWhen, delayWhen, scan } from 'rxjs/operators'
+import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
+import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
+
+
 
 const OrderBook = () => {
 
-  const [bitstamp_orders, setbitstamp_ordersOrders] = useState([]);
+  const [bitstamp_orders, setBitstamp_orders] = useState();
   const [bitmex_orders, setbitmex_ordersOrders] = useState([]);
+ 
+
   
-  // not needed since a list will be provided
-  const currencyPair = 'btcusd'
-  const currencyPair_bitmex = 'XBTUSD'
-  const currencyArray = currencyPair.toUpperCase().match(/.{1,3}/g);
-
-  useEffect(() => {
-
-    const subscribe_bitstamp = {
-      event: 'bts:subscribe',
-      data: {
-        channel: `order_book_${currencyPair}`
-      }
-    };
-    const subscribe_bitmex = {
-        op: "subscribe",
-        args: [`orderBookL2:${currencyPair_bitmex}`],
-    };
-
-
-    const ws_bitstamp = webSocket({
-      url: 'wss://ws.bitstamp.net',
-      openObserver: {
-        next: () => {
-            console.log('connetion established');
-        }
-      }
-    })
-
-    const ws_bitmex = webSocket({
-        url: 'wss://www.bitmex.com/realtime',
-        openObserver: {
-          next: () => {
-            console.log('connetion established');
-          }
-        }
-      });
-      
-      // const observer = ws_bitmex.subscribe(
-        // msg => {
-      //     debugger
-      //     return(console.log('message received: ' + msg))
-      //   });
-      // ws_bitmex.next(subscribe_bitmex)
-    ws_bitstamp
-    .pipe(
-      scan((accumulatedData, nextItem)=>{
-        if(Object.keys(nextItem['data']).length>0){
-          accumulatedData['bids'] = nextItem['data']['bids'][0];
-          accumulatedData['asks'] = nextItem['data']['asks'][0];
-        };
-        return accumulatedData;
-      },{}),
-      retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
-        if (window.navigator.onLine) {
-          return Observable.timer(10000);
-        } else {
-          return Observable.fromEvent(window, 'online');
+  useEffect(()=>{
+    ws_bitstamp$
+      .pipe(
+        scan((accumulatedData, nextItem)=>{
+          if(Object.keys(nextItem['data']).length>0){//initialize a hash and setting keys asks and bids with orders on top of both sides
+            accumulatedData['bids'] = nextItem['data']['bids'][0];
+            accumulatedData['asks'] = nextItem['data']['asks'][0];
           };
-        })
-    )
-    .subscribe(
-      msg => {
-        debugger
-        return(
-          Object.keys(msg).length > 0 ? setbitstamp_ordersOrders(msg) : console.log(msg['event'])
-        )
-      }
-    )
-    ws_bitstamp.next(subscribe_bitstamp)
-
-  //   ws_bitstamp.onopen = () => {
-  //     ws_bitstamp.send(JSON.stringify(subscribe_bitstamp));
-  //   };
-  //   ws_bitmex.onopen = () => {
-  //     ws_bitmex.send(JSON.stringify(subscribe_bitmex));
-  //   };
+          return accumulatedData;
+        },{}),
+        retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
+          if (window.navigator.onLine) {
+            return Observable.timer(10000);
+          } else {
+            return Observable.fromEvent(window, 'online');
+            };
+          })
+      ).subscribe(
+        msg => {
+          debugger
+          Object.keys(msg).length > 0 ? setbitstamp_ordersOrders(() => [msg]) : null
+        }
+      );
 
 
-    // ws_bitstamp.onmessage = (event) => {
-    //   const response = JSON.parse(event.data);
-      
-    //   setbitstamp_ordersOrders(response.data);
-    // };
-    // ws_bitmex.onmessage = (event) => {
-    //   const response = JSON.parse(event.data);
-      
-    //   if(response['data'] && response['data'].length > 0){
-      
-    //     const sell_side = response['data'].filter(i=>(i['side'] === 'Sell'));
-    //     const buy_side = response['data'].filter(i=>(i['side'] === 'Sell'));
-    //     const sell_price_volume_arr = sell_side.map(i=>([i['price'],i['size']]));
-    //     const buy_price_volume_arr = buy_side.map(i=>([i['price'],i['size']]));
-    //     const result = {'bids':buy_price_volume_arr, 'asks':sell_price_volume_arr};
-    //     setbitmex_ordersOrders(result);
-    //   }
-    // };
+    // ws_bitmex$.subscribe(msg => {
+    //   Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
+    // });
 
 
-  //   ws_bitstamp.onclose = () => {
-  //     ws_bitstamp.close();
-  //   };
-  //   ws_bitmex.onclose = () => {
-  //     ws_bitmex.close();
-  //   };
-
+    ws_bitstamp$.next(subscribe_bitstamp);    
+    // ws_bitmex$.next(subscribe_bitmex);
+    
     return () => {
-      ws_bitstamp.complete();
-      ws_bitmex.complete();
+      ws_bitmex$.complete();
+      ws_bitstamp$.complete();
     };
-  }, []);
+  },[])
 
+        
+
+
+
+      // .pipe(
+      //   scan((accumulatedData, nextItem)=>{
+      //     if(Object.keys(nextItem['data']).length>0){//initialize a hash and setting keys asks and bids with orders on top of both sides
+      //       accumulatedData['bids'] = nextItem['data']['bids'][0];
+      //       accumulatedData['asks'] = nextItem['data']['asks'][0];
+      //     };
+      //     return accumulatedData;
+      //   },{}),
+      //   retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
+      //     if (window.navigator.onLine) {
+      //       return Observable.timer(10000);
+      //     } else {
+      //       return Observable.fromEvent(window, 'online');
+      //       };
+      //     })
+      // ).
+
+
+      // .subscribe(
+      //   msg => {
+      //     Object.keys(msg).length > 0 ? setbitstamp_ordersOrders(() => [msg]) : null
+      //   }
+      // )
+      // debugger
+      // console.log(bitstamp_orders);
+      // ws_bitstamp.next(subscribe_bitstamp);
+
+      // return () =>{
+      //   ws_bitstamp.complete();
+      // };
+  // },[]);
+        
+
+//   if(response['data'] && response['data'].length > 0){
+  
+//     const sell_side = response['data'].filter(i=>(i['side'] === 'Sell'));
+//     const buy_side = response['data'].filter(i=>(i['side'] === 'Sell'));
+//     const sell_price_volume_arr = sell_side.map(i=>([i['price'],i['size']]));
+//     const buy_price_volume_arr = buy_side.map(i=>([i['price'],i['size']]));
+//     const result = {'bids':buy_price_volume_arr, 'asks':sell_price_volume_arr};
+//     setbitmex_ordersOrders(result);
+//   }
+// };
 
   // const bitstamp_bids = bitstamp_orders['bids']
   // const bitstamp_asks = bitstamp_orders['asks']
