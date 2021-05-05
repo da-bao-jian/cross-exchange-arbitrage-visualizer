@@ -21,11 +21,6 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 
 
 
-
-
-
-
-
 // const ccxws = require("ccxws");
 // const binance = new ccxws.Binance();
 
