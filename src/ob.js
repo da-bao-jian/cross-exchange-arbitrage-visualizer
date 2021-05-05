@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Observable } from 'rxjs';
-import { map, tap, retryWhen, delayWhen, scan } from 'rxjs/operators'
+import { Observable, timer } from 'rxjs';
+import { map, retryWhen, delayWhen, scan } from 'rxjs/operators'
 import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
 import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
 
@@ -8,10 +8,13 @@ import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
 
 const OrderBook = () => {
 
-  const [bitstamp_orders, setBitstamp_orders] = useState();
   const [bitmex_orders, setbitmex_ordersOrders] = useState([]);
- 
-
+  
+  const currencyPair = 'btcusd'
+  const currencyPair_bitmex = 'XBTUSD'
+  const currencyArray = currencyPair.toUpperCase().match(/.{1,3}/g);
+  
+  const [bitstamp_orders, setBitstamp_orders] = useState();
   
   useEffect(()=>{
     ws_bitstamp$
@@ -21,72 +24,46 @@ const OrderBook = () => {
             accumulatedData['bids'] = nextItem['data']['bids'][0];
             accumulatedData['asks'] = nextItem['data']['asks'][0];
           };
+          
           return accumulatedData;
         },{}),
         retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
           if (window.navigator.onLine) {
-            return Observable.timer(10000);
+            return timer(10000);
           } else {
             return Observable.fromEvent(window, 'online');
             };
           })
-      ).subscribe(
-        msg => {
-          debugger
-          Object.keys(msg).length > 0 ? setbitstamp_ordersOrders(() => [msg]) : null
+      )
+      .subscribe(
+          msg => {
+            
+            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null
         }
       );
-
+    ws_bitstamp$.next(subscribe_bitstamp(currencyPair));    
+    // ws_bitmex$.next(subscribe_bitmex);
+    
+    return () => {
+      ws_bitstamp$.complete();
+    };
+  },[])
+  debugger
+  
+    
 
     // ws_bitmex$.subscribe(msg => {
     //   Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
     // });
-
-
-    ws_bitstamp$.next(subscribe_bitstamp);    
-    // ws_bitmex$.next(subscribe_bitmex);
     
-    return () => {
-      ws_bitmex$.complete();
-      ws_bitstamp$.complete();
-    };
-  },[])
-
+  
+  
+  
         
 
 
 
-      // .pipe(
-      //   scan((accumulatedData, nextItem)=>{
-      //     if(Object.keys(nextItem['data']).length>0){//initialize a hash and setting keys asks and bids with orders on top of both sides
-      //       accumulatedData['bids'] = nextItem['data']['bids'][0];
-      //       accumulatedData['asks'] = nextItem['data']['asks'][0];
-      //     };
-      //     return accumulatedData;
-      //   },{}),
-      //   retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
-      //     if (window.navigator.onLine) {
-      //       return Observable.timer(10000);
-      //     } else {
-      //       return Observable.fromEvent(window, 'online');
-      //       };
-      //     })
-      // ).
 
-
-      // .subscribe(
-      //   msg => {
-      //     Object.keys(msg).length > 0 ? setbitstamp_ordersOrders(() => [msg]) : null
-      //   }
-      // )
-      // debugger
-      // console.log(bitstamp_orders);
-      // ws_bitstamp.next(subscribe_bitstamp);
-
-      // return () =>{
-      //   ws_bitstamp.complete();
-      // };
-  // },[]);
         
 
 //   if(response['data'] && response['data'].length > 0){
@@ -131,9 +108,13 @@ const OrderBook = () => {
   //     </tr>
   //   </thead>
   // );
-
+d
   return (
-    <div>{bitmex_orders}</div>
+    <div>
+      <h1>d</h1>
+        {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
+        <div id='bids'>{bitstamp_orders[0]['bids']}</div> : null}
+    </div>
   //   <div className="order-container">
   //     <table>
   //       {orderHead('Bids')}
