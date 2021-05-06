@@ -4,51 +4,88 @@ import { map, retryWhen, delayWhen, scan } from 'rxjs/operators'
 import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
 import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
 
-
-
 const OrderBook = () => {
 
-  const [bitmex_orders, setbitmex_ordersOrders] = useState([]);
   
-  const currencyPair = 'btcusd'
+  const currencyPair_btc = 'btcusd'
+  const currencyPair_eth = 'ethusd'
+
   const currencyPair_bitmex = 'XBTUSD'
-  const currencyArray = currencyPair.toUpperCase().match(/.{1,3}/g);
+  // const currencyArray = currencyPair.toUpperCase().match(/.{1,3}/g);
   
   const [bitstamp_orders, setBitstamp_orders] = useState();
-  
-  useEffect(()=>{
+  const [bitmex_orders, setbitmex_ordersOrders] = useState([]);
+
+  const bitstampSocketSetup = () => (
+
     ws_bitstamp$
+      .multiplex(
+        () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
+        () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
+        (msg) => msg.channel === `order_book_${currencyPair_btc}`
+      ) 
       .pipe(
         scan((accumulatedData, nextItem)=>{
           if(Object.keys(nextItem['data']).length>0){//initialize a hash and setting keys asks and bids with orders on top of both sides
             accumulatedData['bids'] = nextItem['data']['bids'][0];
             accumulatedData['asks'] = nextItem['data']['asks'][0];
           };
-          
           return accumulatedData;
         },{}),
         retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
           if (window.navigator.onLine) {
             return timer(10000);
           } else {
-            return Observable.fromEvent(window, 'online');
-            };
-          })
+            return fromEvent(window, 'online');
+          };
+        })
       )
-      .subscribe(
-          msg => {
-            
-            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null
-        }
-      );
-    ws_bitstamp$.next(subscribe_bitstamp(currencyPair));    
-    // ws_bitmex$.next(subscribe_bitmex);
+  );
+  //     bitstampSocket.subscribe(
+  //         msg => {
+  //           Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
+  //         },
+  //         err => {console.log(err)}
+  //     );
+
+  //   ws_bitstamp$.next(subscribe_bitstamp(currencyPair));    
+
+
     
+  useEffect(()=>{
+    // bitstampSocketSetup();
+    const socket1 = bitstampSocketSetup()
+    // const socket1 = ws_bitstamp$.multiplex(
+    //  () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
+    //  () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
+    //   msg => msg.channel === `order_book_${currencyPair_btc}`
+    // );
+    socket1.subscribe(
+      msg => {
+        debugger
+            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
+          },
+      err => {console.log(err)}
+    )
+
+    const socket2 = ws_bitstamp$.multiplex(
+     () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_eth}`}}),
+     () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_eth}`}}),
+      msg => msg.channel === `order_book_${currencyPair_eth}`
+    );
+    socket2.subscribe(
+      msg => {
+          
+            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
+          },
+      err => {console.log(err)}
+    )
+
     return () => {
       ws_bitstamp$.complete();
     };
-  },[])
-  debugger
+  },[]);
+  
   
     
 
@@ -108,7 +145,7 @@ const OrderBook = () => {
   //     </tr>
   //   </thead>
   // );
-d
+
   return (
     <div>
       <h1>d</h1>
