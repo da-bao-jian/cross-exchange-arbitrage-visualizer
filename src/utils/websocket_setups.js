@@ -20,11 +20,11 @@ export const bitstampSocketSetup = (currencyPair) => (
         return accumulatedData;
         },{}),
         retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
-        if (window.navigator.onLine) {
-            return timer(10000);
-        } else {
-            return fromEvent(window, 'online');
-        };
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
         })
     )
 );

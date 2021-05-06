@@ -5,7 +5,7 @@ import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
 import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
 import {bitstampSocketSetup} from './utils/websocket_setups';
 
-const OrderBook = () => {
+const OrderBook = ({bitstampSocket}) => {
 
   
   const currencyPair_btc = 'btcusd'
@@ -30,42 +30,28 @@ const OrderBook = () => {
 
     
   useEffect(()=>{
-    // bitstampSocketSetup();
-    const socket1 = bitstampSocketSetup(currencyPair_btc)
     // const socket1 = ws_bitstamp$.multiplex(
     //  () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
     //  () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
     //   msg => msg.channel === `order_book_${currencyPair_btc}`
     // );
-    socket1.subscribe(
-      msg => {
+
         
-            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
-          },
+    bitstampSocket.subscribe(
+      msg => {
+        Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
+      },
       err => {console.log(err)}
     )
 
-    // const socket2 = ws_bitstamp$.multiplex(
-    //  () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_eth}`}}),
-    //  () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_eth}`}}),
-    //   msg => msg.channel === `order_book_${currencyPair_eth}`
-    // );
-    const socket2 = bitstampSocketSetup(currencyPair_eth)
-    socket2.subscribe(
-      msg => {
-          debugger
-            Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
-          },
-      err => {console.log(err)}
-    )
 
     return () => {
-      ws_bitstamp$.complete();
+      bitstampSocket.unsubscribe();
     };
   },[]);
   
   
-    
+  
 
     // ws_bitmex$.subscribe(msg => {
     //   Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
@@ -126,7 +112,6 @@ const OrderBook = () => {
 
   return (
     <div>
-      <h1>d</h1>
         {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
         <div id='bids'>{bitstamp_orders[0]['bids']}</div> : null}
     </div>
