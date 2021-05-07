@@ -1,4 +1,4 @@
-import {ws_bitmex$, ws_bitstamp$, ws_ftx$} from './websocket_connection';
+import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$ } from './websocket_connection';
 import { retryWhen, scan, map } from 'rxjs/operators';
 import { timer } from 'rxjs';
 
@@ -61,21 +61,43 @@ export const ftxSocketSetup = (currencyPair) => (
     .multiplex(
         () => ({'op': 'subscribe', 'channel': 'ticker', 'market': currencyPair}),
         () => ({'op': 'unsubscribe', 'channel': 'ticker', 'market': currencyPair}),
-        (msg) => {
-            return(
-                msg.market === currencyPair && msg.data !== undefined
-            )
-        }
+        (msg) => (msg.market === currencyPair && msg.data !== undefined)
     ) 
     .pipe(
         scan((accumulatedData, nextItem)=>{
-            if(Object.keys(nextItem['data']).length>0){//initialize a hash and setting keys asks and bids with orders on top of both sides
+            if(Object.keys(nextItem['data']).length>0){
                 accumulatedData['bids'] = [nextItem['data']['bid'], nextItem['data']['bidSize']];
                 accumulatedData['asks'] = [nextItem['data']['ask'], nextItem['data']['askSize']];
             };
             return accumulatedData;
         },{}),
-        retryWhen((err) => { //error handling: reconnect if online, otherwise wait for internet connection
+        retryWhen((err) => { 
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
+        })
+    )
+);
+
+export const binanceSocketSetup = (currencyPair, id) => (//binance requires an unique id
+    ws_binance$ 
+    .multiplex(
+        () => ({method: "SUBSCRIBE",params:[`${currencyPair}@bookTicker`],id:id}),
+        () => ({method: "UNSUBSCRIBE",params:[`${currencyPair}@bookTicker`],id:id}),
+        (msg) => {
+            return(msg.stream === `${currencyPair}@bookTicker`)}
+    ) 
+    .pipe(
+        scan((accumulatedData, nextItem)=>{
+            if(Object.keys(nextItem['data']).length>0){
+                accumulatedData['bids'] = [nextItem['data']['b'], nextItem['data']['B']];
+                accumulatedData['asks'] = [nextItem['data']['a'], nextItem['data']['A']];
+            };
+            return accumulatedData;
+        },{}),
+        retryWhen((err) => { 
             if (window.navigator.onLine) {
                 return timer(10000);
             } else {
