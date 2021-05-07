@@ -16,23 +16,12 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket}) => {
   };
     
   useEffect(()=>{
-    bitstampSocket.subscribe(
-      msg => {Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null},
-      err => {console.log(err)}
-    );
-    bitmexSocket.subscribe(
-      msg => {Object.keys(msg).length > 0 ? setBitmex_orders(() => [msg]) : null},
-      err => {console.log(err)}
-    );
-    ftxSocket.subscribe(
-      msg => {Object.keys(msg).length > 0 ? setFtx_orders(() => [msg]) : null},
-      err => {console.log(err)}
-    );
-    binanceSocket.subscribe(
-      msg => {
-        Object.keys(msg).length > 0 ? setBinance_orders(() => [msg]) : null},
-      err => {console.log(err)}
-    );
+    socketSubscription(bitstampSocket, setBitstamp_orders);
+    socketSubscription(bitmexSocket, setBitmex_orders);
+    socketSubscription(ftxSocket, setFtx_orders);
+    socketSubscription(binanceSocket, setBinance_orders);
+
+
 
     return () => {
       bitstampSocket.unsubscribe();
