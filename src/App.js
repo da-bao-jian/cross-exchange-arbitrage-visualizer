@@ -7,7 +7,7 @@ import {symbols} from './utils/symbols';
 const App = () => {
     const [tokenConnections, setTokenConnections] = useState({})
     const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
-    const exchanges = ['binance','bitmex','ftx','coinbase','kraken','bitstamp','bitfinex','okex','gemini','huobi'];
+    const exchanges = ['coinbase','kraken','bitfinex','okex','gemini','huobi'];
 
     let bitstampSocket1 = bitstampSocketSetup(symbols['bitstamp']['BTC']);
     let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);

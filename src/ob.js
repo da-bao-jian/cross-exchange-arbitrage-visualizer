@@ -29,7 +29,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket}) => {
       err => {console.log(err)}
     );
     binanceSocket.subscribe(
-      msg => {debugger
+      msg => {
         Object.keys(msg).length > 0 ? setBinance_orders(() => [msg]) : null},
       err => {console.log(err)}
     );
