@@ -4,49 +4,28 @@ import { map, retryWhen, delayWhen, scan } from 'rxjs/operators'
 import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
 import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
 import {bitstampSocketSetup} from './utils/websocket_setups';
+import {setup} from './utils/websocket_connection';
 
-const OrderBook = ({bitstampSocket}) => {
+const OrderBook = ({bitstampSocket, bitmexSocket}) => {
 
-  
-  const currencyPair_btc = 'btcusd'
-  const currencyPair_eth = 'ethusd'
-
-  const currencyPair_bitmex = 'XBTUSD'
-  // const currencyArray = currencyPair.toUpperCase().match(/.{1,3}/g);
-  
   const [bitstamp_orders, setBitstamp_orders] = useState();
-  const [bitmex_orders, setbitmex_ordersOrders] = useState([]);
-
-
-  //     bitstampSocket.subscribe(
-  //         msg => {
-  //           Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
-  //         },
-  //         err => {console.log(err)}
-  //     );
-
-  //   ws_bitstamp$.next(subscribe_bitstamp(currencyPair));    
-
-
+  const [bitmex_orders, setBitmex_orders] = useState();
     
   useEffect(()=>{
-    // const socket1 = ws_bitstamp$.multiplex(
-    //  () => ({event: 'bts:subscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
-    //  () => ({event: 'bts:unsubscribe', data: {channel: `order_book_${currencyPair_btc}`}}),
-    //   msg => msg.channel === `order_book_${currencyPair_btc}`
-    // );
-
-        
     bitstampSocket.subscribe(
-      msg => {
-        Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
-      },
+      msg => {Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null},
       err => {console.log(err)}
-    )
+    );
+    bitmexSocket.subscribe(
+      msg => {  
+        Object.keys(msg).length > 0 ? setBitmex_orders(() => [msg]) : null},
+      err => {console.log(err)}
+    );
 
 
     return () => {
       bitstampSocket.unsubscribe();
+      bitmexSocket.unsubscribe();
     };
   },[]);
   
@@ -112,8 +91,14 @@ const OrderBook = ({bitstampSocket}) => {
 
   return (
     <div>
-        {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
-        <div id='bids'>{bitstamp_orders[0]['bids']}</div> : null}
+      <div>
+          {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
+          <div id='bids'>{bitstamp_orders[0]['bids']}</div> : null}
+      </div>
+      <div>
+          {bitmex_orders !== undefined && bitmex_orders.length > 0 ? 
+          <div id='bids'>{bitmex_orders[0]['bids']}</div> : null}
+      </div>
     </div>
   //   <div className="order-container">
   //     <table>
