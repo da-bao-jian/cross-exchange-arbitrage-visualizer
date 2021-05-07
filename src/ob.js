@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Observable, timer } from 'rxjs';
-import { map, retryWhen, delayWhen, scan } from 'rxjs/operators'
-import {ws_bitmex$, ws_bitstamp$} from './utils/websocket_connection';
-import {subscribe_bitstamp, subscribe_bitmex} from './utils/websocket_message';
-import {bitstampSocketSetup} from './utils/websocket_setups';
-import {setup} from './utils/websocket_connection';
 
-const OrderBook = ({bitstampSocket, bitmexSocket}) => {
 
-  const [bitstamp_orders, setBitstamp_orders] = useState();
-  const [bitmex_orders, setBitmex_orders] = useState();
+let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket}) => {
+
+  let [bitstamp_orders, setBitstamp_orders] = useState();
+  let [bitmex_orders, setBitmex_orders] = useState();
+  let [ftx_orders, setFtx_orders] = useState();
+
     
   useEffect(()=>{
     bitstampSocket.subscribe(
@@ -17,53 +14,23 @@ const OrderBook = ({bitstampSocket, bitmexSocket}) => {
       err => {console.log(err)}
     );
     bitmexSocket.subscribe(
-      msg => {  
-        Object.keys(msg).length > 0 ? setBitmex_orders(() => [msg]) : null},
+      msg => {Object.keys(msg).length > 0 ? setBitmex_orders(() => [msg]) : null},
       err => {console.log(err)}
     );
-
+    ftxSocket.subscribe(
+      msg => {debugger
+        Object.keys(msg).length > 0 ? setFtx_orders(() => [msg]) : null},
+      err => {console.log(err)}
+    )
 
     return () => {
       bitstampSocket.unsubscribe();
       bitmexSocket.unsubscribe();
+      ftxSocket.unsubscribe();
     };
   },[]);
   
-  
-  
 
-    // ws_bitmex$.subscribe(msg => {
-    //   Object.keys(msg).length > 0 ? setBitstamp_orders(() => [msg]) : null;
-    // });
-    
-  
-  
-  
-        
-
-
-
-
-        
-
-//   if(response['data'] && response['data'].length > 0){
-  
-//     const sell_side = response['data'].filter(i=>(i['side'] === 'Sell'));
-//     const buy_side = response['data'].filter(i=>(i['side'] === 'Sell'));
-//     const sell_price_volume_arr = sell_side.map(i=>([i['price'],i['size']]));
-//     const buy_price_volume_arr = buy_side.map(i=>([i['price'],i['size']]));
-//     const result = {'bids':buy_price_volume_arr, 'asks':sell_price_volume_arr};
-//     setbitmex_ordersOrders(result);
-//   }
-// };
-
-  // const bitstamp_bids = bitstamp_orders['bids']
-  // const bitstamp_asks = bitstamp_orders['asks']
-
-  // const bitmex_bids = bitmex_orders['bids'] 
-  // const bitmex_asks = bitmex_orders['asks']
-  // // const { bids, asks } = bitstamp_orders; 
-  // // bids, asks: [[price, volume]]
   
   // const orderRows = (arr) => 
   //   arr &&

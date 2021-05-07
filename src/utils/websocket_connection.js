@@ -18,10 +18,11 @@ export const ws_bitmex$ = webSocket({
     }
 });
 
-export const setup = () =>{
-    debugger
-    ws_bitmex$.next({
-    op: "subscribe",
-    args: ['orderBookL2: XBTUSD'],
-    })
-}
+export const ws_ftx$ = webSocket({
+    url: 'wss://ftx.com/ws/',
+    openObserver: {
+        next: () => {
+            console.log('bitmex connetion established')
+        }   
+    }
+});
