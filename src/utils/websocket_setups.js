@@ -1,4 +1,4 @@
-import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$, ws_coinbase$, ws_kraken$, ws_bitfinex$} from './websocket_connection';
+import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$, ws_coinbase$, ws_kraken$, ws_bitfinex$, ws_bybit$} from './websocket_connection';
 import { retryWhen, scan, map } from 'rxjs/operators';
 import { timer } from 'rxjs';
 
@@ -139,14 +139,9 @@ export const coinbaseSocketSetup = (currencyPair) => {
                         if(bids.map((price)=>price[0]).indexOf(nextItem['changes'][0][1]) !== -1){
                             bids[bids.map((price)=>price[0]).indexOf(nextItem['changes'][0][1])] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
                         }
-                        else {
-                            
-                            for(let i=0; i<bids.length;i++){
-                                if(nextItem['changes'][0][1]>bids[i][0]){
-                                    storage = bids.splice(0,i-1,[nextItem['changes'][0][1], nextItem['changes'][0][2]]);
-                                    bids = storage.concat(bids);
-                                }
-                            };
+                        else if (nextItem['changes'][0][1]>bids[0][0]){
+                            bids[0] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
+
                         };
                     };
                 } else if(nextItem['changes'][0][0] === 'sell'){
@@ -156,21 +151,14 @@ export const coinbaseSocketSetup = (currencyPair) => {
                         if(asks.map((price)=>price[0]).indexOf(nextItem['changes'][0][1]) !== -1){
                             asks[asks.map((price)=>price[0]).indexOf(nextItem['changes'][0][1])] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
                         }
-                        else {
-                            
-                            for(let i=0; i<asks.length;i++){
-                                if(nextItem['changes'][0][1]<asks[i][0]){
-                                    storage = asks.splice(0,i-1,[nextItem['changes'][0][1], nextItem['changes'][0][2]]);
-                                    asks = storage.concat(asks);
-                                }
-                            };
+                        else if (nextItem['changes'][0][1]<asks[0][0]){
+                            asks[0] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
                         }
                     }
                 }
                 
                 accumulatedData['bids'] = [bids[0][0], bids[0][1]];
                 accumulatedData['asks'] = [asks[0][0], asks[0][1]];
-                
             };
             return accumulatedData;
         },{}),
@@ -229,7 +217,7 @@ export const bitfinexSocketSetup = (currencyPair) => {
         }
     ) 
     .pipe(
-        scan((accumulatedData, nextItem)=>{debugger
+        scan((accumulatedData, nextItem)=>{
             if(nextItem.length>0){
                 accumulatedData['bids'] = [nextItem[1][0], nextItem[1][1]];
                 accumulatedData['asks'] = [nextItem[1][2], nextItem[1][3]];
@@ -245,3 +233,30 @@ export const bitfinexSocketSetup = (currencyPair) => {
         })
     )
 };
+
+export const bybitSocketSetup = (currencyPair) => (
+    ws_bybit$
+    .multiplex(
+        () => ({"op":"subscribe","args":[`trade.${currencyPair}`]}),
+        () => ({"op":"unsubscribe","args":[`trade.${currencyPair}`]}),
+        (msg) => {
+            debugger
+            return(msg["channels"][0]['product_ids'][0] === currencyPair)}
+    ) 
+    .pipe(
+        scan((accumulatedData, nextItem)=>{
+            if(nextItem.length>0){
+                accumulatedData['bids'] = [nextItem[1]['b'][0], nextItem[1]['b'][1]];
+                accumulatedData['asks'] = [nextItem[1]['a'][0], nextItem[1]['a'][1]];
+            };
+            return accumulatedData;
+        },{}),
+        retryWhen((err) => { 
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
+        })
+    )
+);

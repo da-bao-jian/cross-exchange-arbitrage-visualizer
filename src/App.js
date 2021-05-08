@@ -7,13 +7,13 @@ import {bitstampSocketSetup,
     binanceSocketSetup, 
     coinbaseSocketSetup, 
     krakenSocketSetup, 
-    bitfinexSocketSetup} from './utils/websocket_setups';
+    bitfinexSocketSetup,
+    bybitSocketSetup} from './utils/websocket_setups';
 import {symbols} from './utils/symbols';
 
 const App = () => {
     const [tokenConnections, setTokenConnections] = useState({})
     const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
-    const exchanges = ['okex','gemini','huobi'];
 
     let bitstampSocket1 = bitstampSocketSetup(symbols['bitstamp']['BTC']);
     let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
@@ -22,6 +22,7 @@ const App = () => {
     let coinbaseSocket1 = coinbaseSocketSetup(symbols['coinbase']['BTC']);
     let krakenSocket1 = krakenSocketSetup(symbols['kraken']['BTC']);
     let bitfinexSocket1 = bitfinexSocketSetup(symbols['bitfinex']['BTC']);
+    let bybitSocket1 = bybitSocketSetup(symbols['bybit']['BTC']);
 
     function createNewOrderbook(){
 
@@ -38,6 +39,7 @@ const App = () => {
                 coinbaseSocket={coinbaseSocket1}
                 krakenSocket={krakenSocket1}
                 bitfinexSocket={bitfinexSocket1}
+                bybitSocket={bybitSocket1}
                 />
         </div>
     );

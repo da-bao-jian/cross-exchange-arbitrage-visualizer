@@ -22,5 +22,8 @@ export const symbols = {
     },
     'bitfinex': {
         'BTC':'BTCUSD'
+    },
+    'bybit': {
+        'BTC':'BTCUSD'
     }
 };

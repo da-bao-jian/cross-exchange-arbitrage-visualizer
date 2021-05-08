@@ -65,3 +65,12 @@ export const ws_bitfinex$ = webSocket({
         }   
     }
 });
+
+export const ws_bybit$ = webSocket({
+    url: 'wss://stream.bybit.com/realtime',
+    openObserver: {
+        next: () => {
+            console.log('bybit connetion established')
+        }   
+    }
+});
