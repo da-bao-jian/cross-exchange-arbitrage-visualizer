@@ -1,4 +1,4 @@
-import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$ } from './websocket_connection';
+import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$, ws_coinbase$ } from './websocket_connection';
 import { retryWhen, scan, map } from 'rxjs/operators';
 import { timer } from 'rxjs';
 
@@ -106,3 +106,79 @@ export const binanceSocketSetup = (currencyPair, id) => (//binance requires an u
         })
     )
 );
+
+export const coinbaseSocketSetup = (currencyPair) => {//binance requires an unique id
+    let bids, asks, storage;
+    return ws_coinbase$
+    .multiplex(
+        () => ({"type": "subscribe",
+                "product_ids": [currencyPair],
+                "channels": ["level2"]
+                }), 
+        () => ({"type": "unsubscribe",
+                "product_ids": [currencyPair],
+                "channels": ["ticker"]
+                }), 
+        (msg) => {debugger
+            return(msg.product_id === currencyPair)}
+    ) 
+    .pipe(
+        scan((accumulatedData, nextItem)=>{
+            if(nextItem['type'] === "snapshot"){//first recept of snapshot of the orderbook
+                bids = nextItem['bids'].slice(0,20);
+                asks = nextItem['asks'].slice(0,20);
+                
+                accumulatedData['bids'] = [bids[0][0], bids[0][1]];
+                accumulatedData['asks'] = [asks[0][0], asks[0][1]];
+            } else if (nextItem['type'] === "l2update"){
+                if(nextItem['changes'][0][0] === 'buy'){
+                    if(nextItem['changes'][0][2] === "0.00000000"){
+                        bids = bids.filter((order)=>(order[0] !== nextItem['changes'][0][1]));
+                    } else if(nextItem['changes'][0][2] !== "0.00000000"){
+                        if(bids.map((price)=>price[0]).indexOf(nextItem['changes'][0][1]) !== -1){
+                            bids[bids.map((price)=>price[0]).indexOf(nextItem['changes'][0][1])] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
+                        }
+                        else {
+                            
+                            for(let i=0; i<bids.length;i++){
+                                if(nextItem['changes'][0][1]>bids[i][0]){
+                                    storage = bids.splice(0,i-1,[nextItem['changes'][0][1], nextItem['changes'][0][2]]);
+                                    bids = storage.concat(bids);
+                                }
+                            };
+                        };
+                    };
+                } else if(nextItem['changes'][0][0] === 'sell'){
+                    if(nextItem['changes'][0][2] === "0.00000000"){
+                        asks = asks.filter((order)=>(order[0] !== nextItem['changes'][0][1]));
+                    } else if(nextItem['changes'][0][2] !== "0.00000000"){
+                        if(asks.map((price)=>price[0]).indexOf(nextItem['changes'][0][1]) !== -1){
+                            asks[asks.map((price)=>price[0]).indexOf(nextItem['changes'][0][1])] = [nextItem['changes'][0][1], nextItem['changes'][0][2]]
+                        }
+                        else {
+                            
+                            for(let i=0; i<asks.length;i++){
+                                if(nextItem['changes'][0][1]<asks[i][0]){
+                                    storage = asks.splice(0,i-1,[nextItem['changes'][0][1], nextItem['changes'][0][2]]);
+                                    asks = storage.concat(asks);
+                                }
+                            };
+                        }
+                    }
+                }
+                debugger
+                accumulatedData['bids'] = [bids[0][0], bids[0][1]];
+                accumulatedData['asks'] = [asks[0][0], asks[0][1]];
+                
+            };
+            return accumulatedData;
+        },{}),
+        retryWhen((err) => { 
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
+        })
+    )
+};

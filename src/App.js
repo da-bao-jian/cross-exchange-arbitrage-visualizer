@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrderBook from './ob';
 import './App.scss';
-import {bitstampSocketSetup, bitmexSocketSetup, ftxSocketSetup,binanceSocketSetup} from './utils/websocket_setups';
+import {bitstampSocketSetup, bitmexSocketSetup, ftxSocketSetup,binanceSocketSetup, coinbaseSocketSetup} from './utils/websocket_setups';
 import {symbols} from './utils/symbols';
 
 const App = () => {
@@ -13,11 +13,12 @@ const App = () => {
     let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
     let ftxSocket1 = ftxSocketSetup(symbols['ftx']['BTC']);
     let binanceSocket1 = binanceSocketSetup(symbols['binance']['BTC'],1);
+    let coinbaseSocket1 = coinbaseSocketSetup(symbols['coinbase']['BTC']);
 
     function createNewOrderbook(){
 
     };
-
+    
     return (
         <div>
             <h2>Crypto Order Book </h2>
@@ -26,6 +27,7 @@ const App = () => {
                 bitmexSocket={bitmexSocket1} 
                 ftxSocket={ftxSocket1}
                 binanceSocket={binanceSocket1}
+                coinbaseSocket={coinbaseSocket1}
                 />
         </div>
     );

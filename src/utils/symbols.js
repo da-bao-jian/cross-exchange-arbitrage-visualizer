@@ -13,4 +13,8 @@ export const symbols = {
         'BTC':'btcusdt', 
         'ETH':'ethusdt'
     }, 
+    'coinbase': {
+        'BTC': 'BTC-USD',
+        'ETH': 'ETH-USD'
+    }
 };

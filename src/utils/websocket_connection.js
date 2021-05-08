@@ -35,3 +35,23 @@ export const ws_binance$ = webSocket({
         }   
     }
 });
+
+
+export const ws_coinbase$ = webSocket({
+    url: 'wss://ws-feed.pro.coinbase.com',
+    openObserver: {
+        next: () => {
+            console.log('coinbase connetion established')
+        }   
+    }
+});
+
+
+export const we_kraken$ = webSocket({
+    url: 'wss://ws.kraken.com',
+    openObserver: {
+        next: () => {
+            console.log('kraken connetion established')
+        }   
+    }
+});

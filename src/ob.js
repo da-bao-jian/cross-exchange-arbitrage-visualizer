@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 
-let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket}) => {
+let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinbaseSocket}) => {
 
   let [bitstamp_orders, setBitstamp_orders] = useState();
   let [bitmex_orders, setBitmex_orders] = useState();
   let [ftx_orders, setFtx_orders] = useState();
   let [binance_orders, setBinance_orders] = useState(); 
+  let [coinbase_orders, setCoinbase_orders] = useState(); 
 
   function socketSubscription(socket, changeState){
     socket.subscribe(
@@ -20,7 +21,9 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket}) => {
     socketSubscription(bitmexSocket, setBitmex_orders);
     socketSubscription(ftxSocket, setFtx_orders);
     socketSubscription(binanceSocket, setBinance_orders);
+    // socketSubscription(coinbaseSocket, setCoinbase_orders);
 
+  
 
 
     return () => {
@@ -28,6 +31,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket}) => {
       bitmexSocket.unsubscribe();
       ftxSocket.unsubscribe();
       binanceSocket.unsubscribe();
+      coinbaseSocket.unsubscribe();
     };
   },[]);
   
