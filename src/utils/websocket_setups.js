@@ -1,4 +1,4 @@
-import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$, ws_coinbase$ } from './websocket_connection';
+import { ws_bitmex$, ws_bitstamp$, ws_ftx$, ws_binance$, ws_coinbase$, ws_kraken$, ws_bitfinex$} from './websocket_connection';
 import { retryWhen, scan, map } from 'rxjs/operators';
 import { timer } from 'rxjs';
 
@@ -107,7 +107,8 @@ export const binanceSocketSetup = (currencyPair, id) => (//binance requires an u
     )
 );
 
-export const coinbaseSocketSetup = (currencyPair) => {//binance requires an unique id
+// coinbase's ticker channel don't provide volume for best bid/ask price, therefore it subscribes to level2 book channel to extrapolate the data
+export const coinbaseSocketSetup = (currencyPair) => {
     let bids, asks, storage;
     return ws_coinbase$
     .multiplex(
@@ -119,7 +120,7 @@ export const coinbaseSocketSetup = (currencyPair) => {//binance requires an uniq
                 "product_ids": [currencyPair],
                 "channels": ["ticker"]
                 }), 
-        (msg) => {debugger
+        (msg) => {
             return(msg.product_id === currencyPair)}
     ) 
     .pipe(
@@ -182,3 +183,29 @@ export const coinbaseSocketSetup = (currencyPair) => {//binance requires an uniq
         })
     )
 };
+
+export const krakenSocketSetup = (currencyPair) => (
+    ws_kraken$ 
+    .multiplex(
+        () => ({'event': "subscribe",'pair':[currencyPair],'subscription':{'name':'ticker'}}),
+        () => ({'event': "unsubscribe",'pair':[currencyPair],'subscription':{'name':'ticker'}}),
+        (msg) => {
+            return(msg[3] === currencyPair)}
+    ) 
+    .pipe(
+        scan((accumulatedData, nextItem)=>{debugger
+            if(nextItem.length>0){
+                accumulatedData['bids'] = [nextItem[1]['b'][0], nextItem[1]['b'][1]];
+                accumulatedData['asks'] = [nextItem[1]['a'][0], nextItem[1]['a'][1]];
+            };
+            return accumulatedData;
+        },{}),
+        retryWhen((err) => { 
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
+        })
+    )
+);

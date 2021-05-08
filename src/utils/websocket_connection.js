@@ -47,11 +47,20 @@ export const ws_coinbase$ = webSocket({
 });
 
 
-export const we_kraken$ = webSocket({
+export const ws_kraken$ = webSocket({
     url: 'wss://ws.kraken.com',
     openObserver: {
         next: () => {
             console.log('kraken connetion established')
+        }   
+    }
+});
+
+export const ws_bitfinex$ = webSocket({
+    url: 'wss://api.bitfinex.com/',
+    openObserver: {
+        next: () => {
+            console.log('bitfinex connetion established')
         }   
     }
 });

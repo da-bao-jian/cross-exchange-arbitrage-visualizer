@@ -16,5 +16,8 @@ export const symbols = {
     'coinbase': {
         'BTC': 'BTC-USD',
         'ETH': 'ETH-USD'
+    },
+    'kraken': {
+        'BTC':"XBT/USD",
     }
 };

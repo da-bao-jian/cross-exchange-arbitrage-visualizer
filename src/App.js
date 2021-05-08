@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import OrderBook from './ob';
 import './App.scss';
-import {bitstampSocketSetup, bitmexSocketSetup, ftxSocketSetup,binanceSocketSetup, coinbaseSocketSetup} from './utils/websocket_setups';
+import {bitstampSocketSetup, bitmexSocketSetup, ftxSocketSetup,binanceSocketSetup, coinbaseSocketSetup, krakenSocketSetup} from './utils/websocket_setups';
 import {symbols} from './utils/symbols';
 
 const App = () => {
     const [tokenConnections, setTokenConnections] = useState({})
     const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
-    const exchanges = ['coinbase','kraken','bitfinex','okex','gemini','huobi'];
+    const exchanges = ['bitfinex','okex','gemini','huobi'];
 
     let bitstampSocket1 = bitstampSocketSetup(symbols['bitstamp']['BTC']);
     let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
     let ftxSocket1 = ftxSocketSetup(symbols['ftx']['BTC']);
     let binanceSocket1 = binanceSocketSetup(symbols['binance']['BTC'],1);
     let coinbaseSocket1 = coinbaseSocketSetup(symbols['coinbase']['BTC']);
+    let krakenSocket1 = krakenSocketSetup(symbols['kraken']['BTC']);
 
     function createNewOrderbook(){
 
@@ -28,6 +29,7 @@ const App = () => {
                 ftxSocket={ftxSocket1}
                 binanceSocket={binanceSocket1}
                 coinbaseSocket={coinbaseSocket1}
+                krakenSocket={krakenSocket1}
                 />
         </div>
     );
