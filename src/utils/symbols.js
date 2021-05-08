@@ -19,5 +19,8 @@ export const symbols = {
     },
     'kraken': {
         'BTC':"XBT/USD",
+    },
+    'bitfinex': {
+        'BTC':'BTCUSD'
     }
 };

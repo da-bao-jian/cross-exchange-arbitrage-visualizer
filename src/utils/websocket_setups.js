@@ -167,7 +167,7 @@ export const coinbaseSocketSetup = (currencyPair) => {
                         }
                     }
                 }
-                debugger
+                
                 accumulatedData['bids'] = [bids[0][0], bids[0][1]];
                 accumulatedData['asks'] = [asks[0][0], asks[0][1]];
                 
@@ -193,7 +193,7 @@ export const krakenSocketSetup = (currencyPair) => (
             return(msg[3] === currencyPair)}
     ) 
     .pipe(
-        scan((accumulatedData, nextItem)=>{debugger
+        scan((accumulatedData, nextItem)=>{
             if(nextItem.length>0){
                 accumulatedData['bids'] = [nextItem[1]['b'][0], nextItem[1]['b'][1]];
                 accumulatedData['asks'] = [nextItem[1]['a'][0], nextItem[1]['a'][1]];
@@ -209,3 +209,39 @@ export const krakenSocketSetup = (currencyPair) => (
         })
     )
 );
+
+export const bitfinexSocketSetup = (currencyPair) => {
+    let channelId;
+    return ws_bitfinex$ 
+    .multiplex(
+        () => ({"event":"subscribe","channel":"ticker","pair":currencyPair}),
+        () => ({"event":"unsubscribe","channel":"ticker","pair":currencyPair}),
+        (msg) => {
+            if(msg['chanId']!== undefined) {
+                channelId = msg['chanId']
+                return false
+            } else if (msg.length === 2 && msg[0] === channelId){
+                return true
+            }
+            else {
+                return false
+            };
+        }
+    ) 
+    .pipe(
+        scan((accumulatedData, nextItem)=>{debugger
+            if(nextItem.length>0){
+                accumulatedData['bids'] = [nextItem[1][0], nextItem[1][1]];
+                accumulatedData['asks'] = [nextItem[1][2], nextItem[1][3]];
+            };
+            return accumulatedData;
+        },{}),
+        retryWhen((err) => { 
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, 'online');
+            };
+        })
+    )
+};

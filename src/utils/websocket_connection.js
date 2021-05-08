@@ -52,12 +52,13 @@ export const ws_kraken$ = webSocket({
     openObserver: {
         next: () => {
             console.log('kraken connetion established')
+           
         }   
     }
 });
 
 export const ws_bitfinex$ = webSocket({
-    url: 'wss://api.bitfinex.com/',
+    url: 'wss://api-pub.bitfinex.com/ws/2',
     openObserver: {
         next: () => {
             console.log('bitfinex connetion established')
