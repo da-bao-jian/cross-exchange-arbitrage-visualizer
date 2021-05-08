@@ -109,7 +109,7 @@ export const binanceSocketSetup = (currencyPair, id) => (//binance requires an u
 
 // coinbase's ticker channel don't provide volume for best bid/ask price, therefore it subscribes to level2 book channel to extrapolate the data
 export const coinbaseSocketSetup = (currencyPair) => {
-    let bids, asks, storage;
+    let bids, asks;
     return ws_coinbase$
     .multiplex(
         () => ({"type": "subscribe",
@@ -234,20 +234,46 @@ export const bitfinexSocketSetup = (currencyPair) => {
     )
 };
 
-export const bybitSocketSetup = (currencyPair) => (
-    ws_bybit$
+export const bybitSocketSetup = (currencyPair) => {
+    let bids, asks;
+    return ws_bybit$
     .multiplex(
-        () => ({"op":"subscribe","args":[`trade.${currencyPair}`]}),
-        () => ({"op":"unsubscribe","args":[`trade.${currencyPair}`]}),
+        () => ({"op":"subscribe","args":[`orderBookL2_25.${currencyPair}`]}),
+        () => ({"op":"unsubscribe","args":[`orderBookL2_25.${currencyPair}`]}),
         (msg) => {
-            debugger
-            return(msg["channels"][0]['product_ids'][0] === currencyPair)}
+            return(msg['topic'] === `orderBookL2_25.${currencyPair}`)}
     ) 
     .pipe(
         scan((accumulatedData, nextItem)=>{
-            if(nextItem.length>0){
-                accumulatedData['bids'] = [nextItem[1]['b'][0], nextItem[1]['b'][1]];
-                accumulatedData['asks'] = [nextItem[1]['a'][0], nextItem[1]['a'][1]];
+           if(nextItem['type'] === "snapshot"){//first recept of snapshot of the orderbook
+                bids = nextItem['data'].filter((order)=>(order['side'] === 'Buy')).slice(0,20);
+                asks = nextItem['data'].filter((order)=>(order['side'] === 'Sell')).slice(0,20);
+                
+                accumulatedData['bids'] = [bids[bids.length-1][0], bids[bids.length-1][1]];
+                accumulatedData['asks'] = [asks[0][0], asks[0][1]];
+            } else if (nextItem['type'] === "delta" && (nextItem['data']['delete'].length>0 || nextItem['data']['insert'].length>0)){
+                if(nextItem['data']['delete'].length>0){
+                    let sell_side = nextItem['data']['delete'].filter((order)=>(order['side'] === 'Sell'));
+                    let buy_side = nextItem['data']['delete'].filter((order)=>(order['side'] === 'Buy'));
+                    sell_side = sell_side.filter((order) => (order['price']===asks[0]['price']))
+                    buy_side = buy_side.filter((order) => (order['price']===bids[bids.length-1]['price']))
+                    
+                    sell_side.length > 0 ? asks.shift() : null;
+                    buy_side.length > 0 ? bids.pop() : null;
+
+                } 
+                if(nextItem['data']['insert'].length>0){
+                    let sell_side = nextItem['data']['insert'].filter((order)=>(order['side'] === 'Sell'));
+                    let buy_side = nextItem['data']['insert'].filter((order)=>(order['side'] === 'Buy'));     
+                    sell_side = sell_side.filter((order) => (order['price']<asks[1]['price']));
+                    buy_side = buy_side.filter((order) => (order['price']>bids[bids.length-2]['price']));
+                    
+                    sell_side.length > 0 ? asks[1] = sell_side[0] : null;
+                    buy_side.length > 0 ? bids[bids.length-2] = buy_side[0] : null;
+                }
+                
+                accumulatedData['bids'] = [bids[bids.length-1][0], bids[bids.length-1][1]];
+                accumulatedData['asks'] = [asks[0][0], asks[0][1]];
             };
             return accumulatedData;
         },{}),
@@ -259,4 +285,4 @@ export const bybitSocketSetup = (currencyPair) => (
             };
         })
     )
-);
+};
