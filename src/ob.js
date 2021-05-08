@@ -44,6 +44,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
       coinbaseSocket.unsubscribe();
       bitfinexSocket.unsubscribe();
       huobiSocket.unsubscribe();
+      bybitSocket.unsubscribe();
     };
   },[]);
   
