@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 
 
-let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinbaseSocket, krakenSocket, bitfinexSocket, bybitSocket}) => {
+let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinbaseSocket, krakenSocket, bitfinexSocket, bybitSocket }) => {
 
   let [bitstamp_orders, setBitstamp_orders] = useState();
   let [bitmex_orders, setBitmex_orders] = useState();
@@ -13,12 +14,12 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   let [bybitSocket_orders, setBybitSocket] = useState();
 
   function socketSubscription(socket, changeState){
-    setTimeout(() => (
+    setTimeout(() => {
       socket.subscribe(
         msg => {Object.keys(msg).length > 0 ? changeState(() => [msg]) : null},
         err => {console.log(err)}
       )
-    ), 1000)
+    }, 1000)
   };
     
   useEffect(()=>{
