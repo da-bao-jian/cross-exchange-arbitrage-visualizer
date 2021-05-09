@@ -13,7 +13,7 @@ import {bitstampSocketSetup,
 import {symbols} from './utils/symbols';
 
 export const Dashboard = () => {
-d
+
 
     const [tokenConnections, setTokenConnections] = useState({})
 
@@ -44,8 +44,8 @@ d
         )]);
         
     };
-    
-    let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{
+    d
+    let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{debugger
         return (
             <li key={Object.values.length}>
                 {ob}
@@ -55,11 +55,10 @@ d
 
     return ( 
         <div>
+            <button type="button" onClick={()=>createNewOrderbook('ETH',2)}>ETH</button>
             <ul>
                 {obList}
             </ul>
         </div>
     )
-
-
 };
