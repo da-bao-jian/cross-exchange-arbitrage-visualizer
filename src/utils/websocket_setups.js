@@ -172,7 +172,7 @@ export const coinbaseSocketSetup = (currencyPair) => {
 					accumulatedData["bids"] = [nextItem['best_bid'], null];
 					accumulatedData["asks"] = [nextItem['best_ask'], null];
 				} 
-                debugger
+                
 				return accumulatedData;
 			}, {}),
 			retryWhen((err) => {
@@ -200,7 +200,7 @@ export const krakenSocketSetup = (currencyPair) =>
 				pair: [currencyPair],
 				subscription: { name: "ticker" },
 			}),
-			(msg) => {
+			(msg) => {debugger
 				return msg[3] === currencyPair;
 			}
 		)
