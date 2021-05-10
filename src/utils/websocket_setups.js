@@ -155,7 +155,7 @@ export const coinbaseSocketSetup = (currencyPair) => {
 			() => ({
 				type: "subscribe",
 				product_ids: [currencyPair],
-				channels: ["level2"],
+				channels: ["ticker"],
 			}),
 			() => ({
 				type: "unsubscribe",
@@ -168,72 +168,16 @@ export const coinbaseSocketSetup = (currencyPair) => {
 		)
 		.pipe(
 			scan((accumulatedData, nextItem) => {
-				if (nextItem["type"] === "snapshot") {
-					//first recept of snapshot of the orderbook
-					bids = nextItem["bids"].slice(0, 20);
-					asks = nextItem["asks"].slice(0, 20);
-
-					accumulatedData["bids"] = [bids[0][0], bids[0][1]];
-					accumulatedData["asks"] = [asks[0][0], asks[0][1]];
-				} else if (nextItem["type"] === "l2update") {
-                    
-					if (nextItem["changes"][0][0] === "buy") {
-						if (nextItem["changes"][0][2] === "0.00000000") {
-							bids = bids.filter(
-								(order) => order[0] !== nextItem["changes"][0][1]
-							);
-						} else if (nextItem["changes"][0][2] !== "0.00000000") {
-							if (
-								bids
-									.map((price) => price[0])
-									.indexOf(nextItem["changes"][0][1]) !== -1
-							) {
-								bids[
-									bids
-										.map((price) => price[0])
-										.indexOf(nextItem["changes"][0][1])
-								] = [nextItem["changes"][0][1], nextItem["changes"][0][2]];
-							} else if (nextItem["changes"][0][1] > bids[0][0]) {
-								bids[0] = [
-									nextItem["changes"][0][1],
-									nextItem["changes"][0][2],
-								];
-							}
-						}
-					} else if (nextItem["changes"][0][0] === "sell") {
-						if (nextItem["changes"][0][2] === "0.00000000") {
-							asks = asks.filter(
-								(order) => order[0] !== nextItem["changes"][0][1]
-							);
-						} else if (nextItem["changes"][0][2] !== "0.00000000") {
-							if (
-								asks
-									.map((price) => price[0])
-									.indexOf(nextItem["changes"][0][1]) !== -1
-							) {
-								asks[
-									asks
-										.map((price) => price[0])
-										.indexOf(nextItem["changes"][0][1])
-								] = [nextItem["changes"][0][1], nextItem["changes"][0][2]];
-							} else if (nextItem["changes"][0][1] < asks[0][0]) {
-								asks[0] = [
-									nextItem["changes"][0][1],
-									nextItem["changes"][0][2],
-								];
-							}
-						}
-					}
-
-					accumulatedData["bids"] = [bids[0][0], bids[0][1]];
-					accumulatedData["asks"] = [asks[0][0], asks[0][1]];
-				}
-                
+				if (Object.keys(nextItem).length > 0) {
+					accumulatedData["bids"] = [nextItem['best_bid'], null];
+					accumulatedData["asks"] = [nextItem['best_ask'], null];
+				} 
+                debugger
 				return accumulatedData;
 			}, {}),
-			retryWhen((err) => {debugger
+			retryWhen((err) => {
 				if (window.navigator.onLine) {
-                    debugger
+                    
 					return timer(10000);
 				} else {
                     
