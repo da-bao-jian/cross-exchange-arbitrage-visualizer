@@ -107,49 +107,46 @@ export const ftxSocketSetup = (currencyPair) =>
 			})
 		);
 
-export const binanceSocketSetup = (
-	currencyPair,
-	id //binance requires an unique id
-) =>
+export const binanceSocketSetup = (currencyPair, id) =>(
 	ws_binance$
-		.multiplex(
-			() => ({
-				method: "SUBSCRIBE",
-				params: [`${currencyPair}@bookTicker`],
-				id: id,
-			}),
-			() => ({
-				method: "UNSUBSCRIBE",
-				params: [`${currencyPair}@bookTicker`],
-				id: id,
-			}),
-			(msg) => {
-				return msg.stream === `${currencyPair}@bookTicker`;
-			}
-		)
-		.pipe(
-			scan((accumulatedData, nextItem) => {
-				if (Object.keys(nextItem["data"]).length > 0) {
-					accumulatedData["bids"] = [
-						nextItem["data"]["b"],
-						nextItem["data"]["B"],
-					];
-					accumulatedData["asks"] = [
-						nextItem["data"]["a"],
-						nextItem["data"]["A"],
-					];
-				}
-				return accumulatedData;
-			}, {}),
-			retryWhen((err) => {
-				if (window.navigator.onLine) {
-					return timer(10000);
-				} else {
-					return fromEvent(window, "online");
-				}
-			})
-		);
-
+    .multiplex(
+        () => ({
+            method: "SUBSCRIBE",
+            params: [`${currencyPair}@bookTicker`],
+            id: id,
+        }),
+        () => ({
+            method: "UNSUBSCRIBE",
+            params: [`${currencyPair}@bookTicker`],
+            id: id,
+        }),
+        (msg) => {
+            return msg.stream === `${currencyPair}@bookTicker`;
+        }
+    )
+    .pipe(
+        scan((accumulatedData, nextItem) => {
+            if (Object.keys(nextItem["data"]).length > 0) {
+                accumulatedData["bids"] = [
+                    nextItem["data"]["b"],
+                    nextItem["data"]["B"],
+                ];
+                accumulatedData["asks"] = [
+                    nextItem["data"]["a"],
+                    nextItem["data"]["A"],
+                ];
+            }
+            return accumulatedData;
+        }, {}),
+        retryWhen((err) => {
+            if (window.navigator.onLine) {
+                return timer(10000);
+            } else {
+                return fromEvent(window, "online");
+            }
+        })
+    )
+)
 // coinbase's ticker channel don't provide volume for best bid/ask price, therefore it subscribes to level2 book channel to extrapolate the data
 export const coinbaseSocketSetup = (currencyPair) => {
 	let bids, asks;
@@ -179,6 +176,7 @@ export const coinbaseSocketSetup = (currencyPair) => {
 					accumulatedData["bids"] = [bids[0][0], bids[0][1]];
 					accumulatedData["asks"] = [asks[0][0], asks[0][1]];
 				} else if (nextItem["type"] === "l2update") {
+                    
 					if (nextItem["changes"][0][0] === "buy") {
 						if (nextItem["changes"][0][2] === "0.00000000") {
 							bids = bids.filter(
@@ -233,10 +231,12 @@ export const coinbaseSocketSetup = (currencyPair) => {
                 
 				return accumulatedData;
 			}, {}),
-			retryWhen((err) => {
+			retryWhen((err) => {debugger
 				if (window.navigator.onLine) {
+                    debugger
 					return timer(10000);
 				} else {
+                    
 					return fromEvent(window, "online");
 				}
 			})
@@ -277,17 +277,17 @@ export const krakenSocketSetup = (currencyPair) =>
 			})
 		);
 
+let channelId = {}
 export const bitfinexSocketSetup = (currencyPair) => {
-	let channelId;
 	return ws_bitfinex$
 		.multiplex(
 			() => ({ event: "subscribe", channel: "ticker", pair: currencyPair }),
 			() => ({ event: "unsubscribe", channel: "ticker", pair: currencyPair }),
 			(msg) => {
-				if (msg["chanId"] !== undefined) {
-					channelId = msg["chanId"];
+				if (msg["chanId"] !== undefined) {msg
+					channelId[msg["pair"]] = msg["chanId"];
 					return false;
-				} else if (msg.length === 2 && msg[0] === channelId) {
+				} else if (msg.length === 2 && msg[0] === channelId[currencyPair]) {
 					return true;
 				} else {
 					return false;
@@ -296,7 +296,7 @@ export const bitfinexSocketSetup = (currencyPair) => {
 		)
 		.pipe(
 			scan((accumulatedData, nextItem) => {
-				if (nextItem.length > 0) {
+				if (nextItem.length > 0 && nextItem[1] !== 'hb') {
 					accumulatedData["bids"] = [nextItem[1][0], nextItem[1][1]];
 					accumulatedData["asks"] = [nextItem[1][2], nextItem[1][3]];
 				}
@@ -333,11 +333,14 @@ export const bybitSocketSetup = (currencyPair) => {
 						.filter((order) => order["side"] === "Sell")
 						.slice(0, 20);
 
-					accumulatedData["bids"] = [
-						bids[bids.length - 1][0],
-						bids[bids.length - 1][1],
+					accumulatedData["bids"] = [ 
+                        bids[bids.length - 1]['price'],
+						bids[bids.length - 1]['size']/bids[bids.length - 1]['price']
 					];
-					accumulatedData["asks"] = [asks[0][0], asks[0][1]];
+					accumulatedData["asks"] = [
+                        asks[0]['price'],
+						asks[0]['size']/asks[0]['price']
+                    ];
 				} else if (
 					nextItem["type"] === "delta" &&
 					(nextItem["data"]["delete"].length > 0 ||
@@ -377,13 +380,17 @@ export const bybitSocketSetup = (currencyPair) => {
 						sell_side.length > 0 ? (asks[1] = sell_side[0]) : null;
 						buy_side.length > 0 ? (bids[bids.length - 2] = buy_side[0]) : null;
 					}
-
 					accumulatedData["bids"] = [
-						bids[bids.length - 1][0],
-						bids[bids.length - 1][1],
+                        bids[bids.length - 1]['price'],
+						bids[bids.length - 1]['size']/bids[bids.length - 1]['price']
 					];
-					accumulatedData["asks"] = [asks[0][0], asks[0][1]];
-				}
+					accumulatedData["asks"] = [
+                        asks[0]['price'],
+						asks[0]['size']/asks[0]['price']
+                    ];
+                    
+                };
+                
 				return accumulatedData;
 			}, {}),
 			retryWhen((err) => {

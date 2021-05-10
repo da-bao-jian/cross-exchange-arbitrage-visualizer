@@ -4,10 +4,12 @@ export const symbols = {
         'ETH': 'ethusd'
     },
     'bitmex': {
-        'BTC':'XBTUSD'
+        'BTC':'XBTUSD',
+        'ETH':'ETHUSD'
     },
     'ftx': {
-        'BTC':'BTC/USD'
+        'BTC':'BTC/USD',
+        'ETH':'ETH/USD'
     },
     'binance':{
         'BTC':'btcusdt', 
@@ -21,9 +23,11 @@ export const symbols = {
         'BTC':"XBT/USD",
     },
     'bitfinex': {
-        'BTC':'BTCUSD'
+        'BTC':'BTCUSD',
+        'ETH':'ETHUSD'
     },
     'bybit': {
-        'BTC':'BTCUSD'
+        'BTC':'BTCUSD',
+        'ETH':'ETHUSD'
     }
 };

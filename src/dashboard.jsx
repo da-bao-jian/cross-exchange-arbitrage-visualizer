@@ -14,6 +14,7 @@ import {symbols} from './utils/symbols';
 
 export const Dashboard = () => {
 
+    const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
 
     const [tokenConnections, setTokenConnections] = useState({})
 
@@ -44,7 +45,7 @@ export const Dashboard = () => {
         )]);
         
     };
-    d
+    
     let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{debugger
         return (
             <li key={Object.values.length}>

@@ -11,7 +11,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   let [coinbase_orders, setCoinbase_orders] = useState(); 
   let [kraken_orders, setKraken_orders] = useState();
   let [bitfinex_orders, setBitfinex_orders] = useState();
-  let [bybitSocket_orders, setBybitSocket] = useState();
+  let [bybit_orders, setBybitSocket] = useState();
 
   function socketSubscription(socket, changeState){
     setTimeout(() => {
@@ -34,7 +34,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
     bitfinexSocket.subscribe(
       msg => {Object.keys(msg).length > 0 ? setBitfinex_orders(() => [msg]) : null},
       err => {console.log(err)}
-    )
+    );
 
 
     return () => {
@@ -78,13 +78,52 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   return (
     <div>
       <div>
+          <p>Bitstamp</p>
           {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
-          <div id='bids'>{bitstamp_orders[0]['bids']}</div> : null}
+          <div id='bids'>{bitstamp_orders[0]['bids'][0]}</div> : null}
       </div>
       <div>
+        <p>Bitmex</p>
           {bitmex_orders !== undefined && bitmex_orders.length > 0 ? 
-          <div id='bids'>{bitmex_orders[0]['bids']}</div> : null}
+          <div id='bids'>{bitmex_orders[0]['bids'][0]}</div> : null}
+      <div>
+        <p>Kraken</p>
+          {kraken_orders !== undefined && kraken_orders.length > 0 ? 
+          <div id='bids'>{kraken_orders[0]['bids'][0]}</div> : null}
       </div>
+      </div>
+      <div>
+        <p>Ftx</p>
+          {ftx_orders !== undefined && ftx_orders.length > 0 ? 
+          <div id='bids'>{ftx_orders[0]['bids'][0]}</div> : null}
+      </div>
+      <div>
+        <p>Binance</p>
+          {binance_orders !== undefined && binance_orders.length > 0 ? 
+          <div id='bids'>{binance_orders[0]['bids'][0]}</div> : null}
+      </div>
+      <div>
+        <p>Coinbase</p>
+          {coinbase_orders !== undefined && coinbase_orders.length > 0 ? 
+          <div id='bids'>{coinbase_orders[0]['bids'][0]}</div> : null}
+      </div>
+      <div>
+        <p>Bitfinex</p>
+          {bitfinex_orders !== undefined && bitfinex_orders.length > 0 ? 
+          <div id='bids'>{bitfinex_orders[0]['bids'][0]}</div> : null}
+      </div>
+      <div>
+        <p>Bybit</p>
+          {bybit_orders !== undefined && bybit_orders.length > 0 ? 
+          <div id='bids'>{bybit_orders[0]['bids'][0]}</div> : null}
+      </div>
+
+
+
+
+      
+
+
     </div>
   //   <div className="order-container">
   //     <table>

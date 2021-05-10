@@ -15,20 +15,14 @@ import {Dashboard} from './dashboard.jsx';
 
 const App = () => {
 
-    const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
-
-
-
-
     let bitstampSocket1 = bitstampSocketSetup(symbols['bitstamp']['BTC']);
-    let  bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
+    let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
     let ftxSocket1 = ftxSocketSetup(symbols['ftx']['BTC']);
     let binanceSocket1 = binanceSocketSetup(symbols['binance']['BTC'],1);
     let coinbaseSocket1 = coinbaseSocketSetup(symbols['coinbase']['BTC']);
     let krakenSocket1 = krakenSocketSetup(symbols['kraken']['BTC']);
     let bitfinexSocket1 = bitfinexSocketSetup(symbols['bitfinex']['BTC']);
     let bybitSocket1 = bybitSocketSetup(symbols['bybit']['BTC']);
-
 
     
     return (
