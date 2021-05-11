@@ -200,7 +200,7 @@ export const krakenSocketSetup = (currencyPair) =>
 				pair: [currencyPair],
 				subscription: { name: "ticker" },
 			}),
-			(msg) => {debugger
+			(msg) => {
 				return msg[3] === currencyPair;
 			}
 		)

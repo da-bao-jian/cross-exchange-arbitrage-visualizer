@@ -15,6 +15,7 @@ import {Dashboard} from './dashboard.jsx';
 
 const App = () => {
 
+
     let bitstampSocket1 = bitstampSocketSetup(symbols['bitstamp']['BTC']);
     let bitmexSocket1 = bitmexSocketSetup(symbols['bitmex']['BTC']);
     let ftxSocket1 = ftxSocketSetup(symbols['ftx']['BTC']);
