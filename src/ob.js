@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 
-const queue = (store, ele) => {
-  if(Object.keys(store).length >= 20){
+const queue = (store, ele, capacity) => {
+  if(Object.keys(store).length >= capacity){
     delete store[Object.keys(store)[0]]
   };
   let tail = Object.keys(store).length>0 ? Object.keys(store)[Object.keys(store).length-1] : -1;
@@ -20,46 +20,46 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   let [coinbase_orders, setCoinbase_orders] = useState({}); 
   let [kraken_orders, setKraken_orders] = useState({});
   let [bitfinex_orders, setBitfinex_orders] = useState({});
-  let [bybit_orders, setBybitSocket] = useState({});
-
+  let [bybit_orders, setBybit_orders] = useState({});
+  
   function socketSubscription(socket, changeState){
     setTimeout(() => {
       socket.subscribe(
-        msg => {Object.keys(msg).length > 0 ? changeState((old) => (queue(old, msg))) : null},
+        msg => {Object.keys(msg).length > 0 ? changeState((oldData) => queue(oldData, msg, 20)) : null},
         err => {console.log(err)}
       )
-    }, 1000)
+    }, 1000);
   };
     
   useEffect(()=>{
     socketSubscription(bitstampSocket, setBitstamp_orders);
-    // socketSubscription(bitmexSocket, setBitmex_orders);
-    // socketSubscription(ftxSocket, setFtx_orders);
-    // socketSubscription(binanceSocket, setBinance_orders);
-    // socketSubscription(coinbaseSocket, setCoinbase_orders);
-    // socketSubscription(krakenSocket, setKraken_orders);
-    // socketSubscription(bybitSocket, setBybitSocket);
+    socketSubscription(bitmexSocket, setBitmex_orders);
+    socketSubscription(ftxSocket, setFtx_orders);
+    socketSubscription(binanceSocket, setBinance_orders);
+    socketSubscription(coinbaseSocket, setCoinbase_orders);
+    socketSubscription(krakenSocket, setKraken_orders);
+    socketSubscription(bybitSocket, setBybit_orders);
+    socketSubscription(bitfinexSocket, setBitfinex_orders)
     // bitfinexSocket.subscribe(
-    //   msg => {
-    //     Object.keys(msg).length > 0 ? setBitfinex_orders(() => [msg]) : null},
+    //   msg => {Object.keys(msg).length > 0 ? setBitfinex_orders((oldData) => {
+    //     return queue(oldData, msg, 20)}) : null},
     //   err => {console.log(err)}
-    //   );
+    // );
         
       
       return () => {
         bitstampSocket.unsubscribe();
-        // bitmexSocket.unsubscribe();
-        // ftxSocket.unsubscribe();
-        // binanceSocket.unsubscribe();
-        // coinbaseSocket.unsubscribe();
-        // bitfinexSocket.unsubscribe();
-        // huobiSocket.unsubscribe();
-        // bybitSocket.unsubscribe();
+        bitmexSocket.unsubscribe();
+        ftxSocket.unsubscribe();
+        binanceSocket.unsubscribe();
+        coinbaseSocket.unsubscribe();
+        bitfinexSocket.unsubscribe();
+        huobiSocket.unsubscribe();
+        bybitSocket.unsubscribe();
       };
   },[]);
     
-    
-    
+
     
     // const orderRows = (arr) => 
   //   arr &&
@@ -87,11 +87,11 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
 
   return (
     // <div>
-    //   <div>
-    //       <p>Bitstamp</p>
-    //       {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
-    //       <div id='bids'>{bitstamp_orders[0]['bids'][0]}</div> : null}
-    //   </div>
+      <div>
+          <p>Bitstamp</p>
+          {/* {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
+          <div id='bids'>{bitstamp_orders[0]['bids'][0]}</div> : null} */}
+      </div>
     //   <div>
     //     <p>Bitmex</p>
     //       {bitmex_orders !== undefined && bitmex_orders.length > 0 ? 
@@ -154,7 +154,6 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   //       {orderHead('Asks')}
   //       <tbody>{orderRows(bitmex_asks)}</tbody>
   //     </table>
-    <div>caoni</div>
   );
 };
 
