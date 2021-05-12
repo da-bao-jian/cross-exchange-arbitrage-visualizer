@@ -23,12 +23,12 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   useEffect(()=>{
     socketSubscription(bitstampSocket, setBitstamp_orders);
     // socketSubscription(bitmexSocket, setBitmex_orders);
-    // socketSubscription(ftxSocket, setFtx_orders);
-    // socketSubscription(binanceSocket, setBinance_orders);
-    // socketSubscription(coinbaseSocket, setCoinbase_orders);
-    // socketSubscription(krakenSocket, setKraken_orders);
-    // socketSubscription(bybitSocket, setBybit_orders);
-    // socketSubscription(bitfinexSocket, setBitfinex_orders)
+    socketSubscription(ftxSocket, setFtx_orders);
+    socketSubscription(binanceSocket, setBinance_orders);
+    socketSubscription(coinbaseSocket, setCoinbase_orders);
+    socketSubscription(krakenSocket, setKraken_orders);
+    socketSubscription(bybitSocket, setBybit_orders);
+    socketSubscription(bitfinexSocket, setBitfinex_orders)
 
 
       
@@ -75,13 +75,13 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
       <div>
           <Plot 
             bitstamp_orders={bitstamp_orders} 
-            // bitmex_orders={bitmex_orders} 
-            // kraken_orders={kraken_orders} 
-            // ftx_orders={ftx_orders} 
-            // binance_orders={binance_orders}
-            // coinbase_orders={coinbase_orders}
-            // bitfinex_orders={bitfinex_orders}
-            // bybit_orders={bybit_orders}
+            bitmex_orders={bitmex_orders} 
+            kraken_orders={kraken_orders} 
+            ftx_orders={ftx_orders} 
+            binance_orders={binance_orders}
+            coinbase_orders={coinbase_orders}
+            bitfinex_orders={bitfinex_orders}
+            bybit_orders={bybit_orders}
           />
       </div>
       {/* <div>

@@ -60,11 +60,11 @@ export const bitmexSocketSetup = (currencyPair) =>
 			scan((accumulatedData, nextItem) => {
 				accumulatedData["bids"] = [
 					nextItem["data"][0]["bidPrice"],
-					nextItem["data"][0]["bidSize"] / nextItem["data"][0]["bidPrice"],
+					nextItem[Math.floor(Math.random() * (0.1 - 0.05) + 0.05)],
 				]; //on Bitmex, size 1 = 1USD so size/price denotes unit number of 'token' on the book
 				accumulatedData["asks"] = [
 					nextItem["data"][0]["askPrice"],
-					nextItem["data"][0]["askSize"] / nextItem["data"][0]["askPrice"],
+					nextItem[Math.floor(Math.random() * (0.1 - 0.05) + 0.05)],
 				];
 				return accumulatedData;
 			}, {}),
@@ -169,8 +169,8 @@ export const coinbaseSocketSetup = (currencyPair) => {
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				if (Object.keys(nextItem).length > 0) {
-					accumulatedData["bids"] = [nextItem['best_bid'], null];
-					accumulatedData["asks"] = [nextItem['best_ask'], null];
+					accumulatedData["bids"] = [nextItem['best_bid'], Math.floor(Math.random() * (0.1 - 0.05) + 0.05)];
+					accumulatedData["asks"] = [nextItem['best_ask'], Math.floor(Math.random() * (0.1 - 0.05) + 0.05)];
 				} 
                 
 				return accumulatedData;
@@ -241,8 +241,8 @@ export const bitfinexSocketSetup = (currencyPair) => {
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				if (nextItem.length > 0 && nextItem[1] !== 'hb') {
-					accumulatedData["bids"] = [nextItem[1][0], nextItem[1][1]];
-					accumulatedData["asks"] = [nextItem[1][2], nextItem[1][3]];
+					accumulatedData["bids"] = [nextItem[1][0], 0.2];
+					accumulatedData["asks"] = [nextItem[1][2], 0.2];
 				}
 				return accumulatedData;
 			}, {}),
