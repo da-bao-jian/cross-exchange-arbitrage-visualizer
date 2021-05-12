@@ -1,7 +1,7 @@
 
 ![gif](https://github.com/dabaojian1992/cross-exchange-arbitrage-visualizer/blob/master/Animation.gif)
 
-*real time limit orderbook data stream multiplexed using RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket)
+*multiplexed real time limit orderbook data stream using RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket)
 
 *dot size is proportional to order size
 
