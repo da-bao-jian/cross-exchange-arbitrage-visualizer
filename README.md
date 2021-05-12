@@ -3,7 +3,7 @@
 
 *real time limit orderbook data stream multiplexed using RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket)
 
-*dot size denotes order size
+*dot size is proportional to order size
 
 *theoretically, arbitrage opportunity exists when one can buy low on one exchange and sell high on another due to price discrepancies
 
