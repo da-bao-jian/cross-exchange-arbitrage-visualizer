@@ -12,7 +12,7 @@
 
 ## Road ahead
 
-* The purpose of this project is to familiarize mylself with different exchanges' websocket APIs and reactive programming paradigm. For better performance, third party aggregate data providers could be used for more granular data and latency issues;
+* The purpose of this project is to familiarize myself with different exchanges' websocket APIs and reactive programming paradigm. For better performance, third party aggregate data providers could be used for more granular data and latency issues;
 
-* Coinbase and Bybit's API don't provide size for the best bid/ask orders. To get the order size, I had to scan the whole L2 orderbook on an inital request and perform insertions and deletions upon new data feeds, which greatly clogged up the traffic. For now, I set the size parameters on Coinbase and Bybit to random numbers. I'm building a python version of global limit orderbook based on [this](https://web.archive.org/web/20110219163448/http://howtohft.wordpress.com/2011/02/15/how-to-build-a-fast-limit-order-book/) blog post for my own system. If succesussul, I will integrate it into this project. In the meantime, any contribution is welcome. 
+* Coinbase and Bybit's API don't provide size for the best bid/ask orders. To get the order size, I had to scan the whole L2 orderbook on an inital request and perform insertions and deletions upon new data feeds, which greatly clogged up the traffic. For now, I set the size parameters on Coinbase and Bybit to random numbers. I'm currently building a python version of global limit orderbook based on [this](https://web.archive.org/web/20110219163448/http://howtohft.wordpress.com/2011/02/15/how-to-build-a-fast-limit-order-book/) blog post for my own system. If succesussul, I will integrate it into this project. In the meantime, any contribution is welcome. 
 
