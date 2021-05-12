@@ -5,6 +5,6 @@ multiplexed real time limit orderbook data stream using RxJS's [Websocket Subjec
 
 dot size is proportional to order size
 
-theoretically, arbitrage opportunity exists when one can buy low on one exchange and sell high on another due to price discrepancies
+theoretically, arbitrage opportunity exists when one can buy low on one exchange and sell high on another due to price discrepancies. Better yet, one could divide fund into equal shares on each exchange, adn rebalance after every arbitrage play
 
 #### *Not investment advice
