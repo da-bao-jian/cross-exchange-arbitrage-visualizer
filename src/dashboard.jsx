@@ -14,7 +14,6 @@ import {symbols} from './utils/symbols';
 
 export const Dashboard = () => {
 
-    const _SUPPORTED_CURRENCIES = ['BTC', 'ETH','XRP','LTC','Doge','ADA','EOS','Polka'];
 
     const [tokenConnections, setTokenConnections] = useState({})
 
