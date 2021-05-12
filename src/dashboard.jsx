@@ -30,7 +30,6 @@ export const Dashboard = () => {
         let bitfinexSocket = bitfinexSocketSetup(symbols['bitfinex'][token]);
         let bybitSocket = bybitSocketSetup(symbols['bybit'][token]);
 
-// if want to strictly control rerender, can lay out buttons with each one attached with a orderbook component
         setTokenConnections(tokenConnections[token] = [(
             <OrderBook 
                 bitstampSocket={bitstampSocket} 

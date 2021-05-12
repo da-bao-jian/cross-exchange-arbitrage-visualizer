@@ -1,39 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { ResponsiveSwarmPlot } from '@nivo/swarmplot';
-
-
-const queue = (store, ele, capacity) => {
-  debugger
-  if(store.length >= capacity){
-    store.shift()
-    
-  };
-  if(!store.includes(ele)){
-    store.push(ele)
-  }
-  debugger
-  return store;
-};
-
-
-
+import {Plot} from './plot.jsx';
 
 let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinbaseSocket, krakenSocket, bitfinexSocket, bybitSocket }) => {
   let [bitstamp_orders, setBitstamp_orders] = useState();
-  // let [bitmex_orders, setBitmex_orders] = useState();
-  // let [ftx_orders, setFtx_orders] = useState();
-  // let [binance_orders, setBinance_orders] = useState(); 
-  // let [coinbase_orders, setCoinbase_orders] = useState(); 
-  // let [kraken_orders, setKraken_orders] = useState();
-  // let [bitfinex_orders, setBitfinex_orders] = useState();
-  // let [bybit_orders, setBybit_orders] = useState();
-  let arr=[]
+  let [bitmex_orders, setBitmex_orders] = useState();
+  let [ftx_orders, setFtx_orders] = useState();
+  let [binance_orders, setBinance_orders] = useState(); 
+  let [coinbase_orders, setCoinbase_orders] = useState(); 
+  let [kraken_orders, setKraken_orders] = useState();
+  let [bitfinex_orders, setBitfinex_orders] = useState();
+  let [bybit_orders, setBybit_orders] = useState();
+
   function socketSubscription(socket, changeState){
     setTimeout(() => {
       socket.subscribe(
-        msg => {
-          Object.keys(msg).length > 0 ? changeState(() => [msg]) 
-        : null},
+        msg => {Object.keys(msg).length > 0 ? changeState(() => [msg]) : null},
         err => {console.log(err)}
       )
     }, 1000);
@@ -92,10 +73,22 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   return (
     <div>
       <div>
+          <Plot 
+            bitstamp_orders={bitstamp_orders} 
+            // bitmex_orders={bitmex_orders} 
+            // kraken_orders={kraken_orders} 
+            // ftx_orders={ftx_orders} 
+            // binance_orders={binance_orders}
+            // coinbase_orders={coinbase_orders}
+            // bitfinex_orders={bitfinex_orders}
+            // bybit_orders={bybit_orders}
+          />
+      </div>
+      {/* <div>
           <p>Bitstamp</p>
           {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ? 
           <div id='bids'>{bitstamp_orders[0]['bids'][0]}</div> : null}
-      </div>
+      </div> */}
       {/* <div>
         <p>Bitmex</p>
           {bitmex_orders !== undefined && bitmex_orders.length > 0 ? 
