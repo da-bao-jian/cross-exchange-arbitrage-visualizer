@@ -17,7 +17,7 @@ npm install && npm run start
 
 * For a more responsive user experience, I will enable choosing exchanges per user's selection, as displaying all 7 exchanges for multiple tokens simultaneously drastically slows down the updating frequency;
 
-* Timing and transaction fees are make or break for this strategy. I will add These two metrics later
+* Because timing and transaction fees are make or break for this strategy, I will add these two metrics later;
 
 * The purpose of this project is to familiarize myself with different exchanges' websocket APIs and reactive programming paradigm. For better performance, third party aggregate data providers could be used for more granular data and solve latency issues;
 
