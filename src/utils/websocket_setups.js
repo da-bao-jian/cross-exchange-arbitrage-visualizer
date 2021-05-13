@@ -107,7 +107,7 @@ export const ftxSocketSetup = (currencyPair) =>
 			})
 		);
 
-export const binanceSocketSetup = (currencyPair, id) =>(
+export const binanceSocketSetup = (currencyPair, id) => (
 	ws_binance$
     .multiplex(
         () => ({

@@ -14,7 +14,8 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
   function socketSubscription(socket, changeState){
     setTimeout(() => {
       socket.subscribe(
-        msg => {Object.keys(msg).length > 0 ? changeState(() => [msg]) : null},
+        msg => {
+          Object.keys(msg).length > 0 ? changeState(() => [msg]) : null},
         err => {console.log(err)}
       )
     }, 1000);
@@ -34,7 +35,7 @@ let OrderBook = ({bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinba
       
       return () => {
         bitstampSocket.unsubscribe();
-        bitmexSocket.unsubscribe();
+        // bitmexSocket.unsubscribe();
         ftxSocket.unsubscribe();
         binanceSocket.unsubscribe();
         coinbaseSocket.unsubscribe();

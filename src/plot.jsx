@@ -1,5 +1,5 @@
-import { ResponsiveSwarmPlot   } from '@nivo/swarmplot';
-import React, { useState, useEffect } from 'react';
+import { ResponsiveSwarmPlot, ResponsiveSwarmPlotCanvas } from '@nivo/swarmplot';
+import React, { useRef } from 'react';
 
 const queue = (store, ele, capacity) => {
   if(store.length >= capacity){
@@ -10,9 +10,9 @@ const queue = (store, ele, capacity) => {
     !store.map((order)=>(order['bidSize'])).includes(ele['bidSize'])||
     !store.map((order)=>(order['askSize'])).includes(ele['askSize'])
   ){
+    
     store.push(ele)
   }
-  
   return store;
 };
 
@@ -31,30 +31,33 @@ const dataConverter = (exchange, order) => {
     }
 };
 
-let HASH = {'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]};
-let data=[];
+
+
 export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_orders, ftx_orders, coinbase_orders, bitfinex_orders, bybit_orders}) => {
-    
-    if(bitstamp_orders !== undefined && binance_orders!== undefined && ftx_orders!==undefined && kraken_orders!==undefined && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined)
+
+    let data;
+    let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]})
+
+    if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined)// && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
     {
-       HASH['bitstamp'] = queue(HASH['bitstamp'], dataConverter('bitstamp', bitstamp_orders), 20);
-       HASH['binance'] = queue(HASH['binance'], dataConverter('binance', binance_orders), 20);
-       HASH['ftx'] = queue(HASH['ftx'], dataConverter('ftx', ftx_orders), 20);
-       HASH['kraken'] = queue(HASH['kraken'], dataConverter('kraken', kraken_orders), 20);
-       HASH['coinbase'] = queue(HASH['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
-       HASH['bitfinex'] = queue(HASH['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
-       HASH['bybit'] = queue(HASH['bybit'], dataConverter('bybit', bybit_orders), 20);
-       debugger
-       data = Object.values(HASH).flat(); 
+        
+        HASH.current['bitstamp'] = queue(HASH.current['bitstamp'], dataConverter('bitstamp', bitstamp_orders), 20);
+        HASH.current['binance'] = queue(HASH.current['binance'], dataConverter('binance', binance_orders), 20);
+        HASH.current['ftx'] = queue(HASH.current['ftx'], dataConverter('ftx', ftx_orders), 20);
+        HASH.current['kraken'] = queue(HASH.current['kraken'], dataConverter('kraken', kraken_orders), 20);
+        HASH.current['coinbase'] = queue(HASH.current['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
+        HASH.current['bitfinex'] = queue(HASH.current['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
+        HASH.current['bybit'] = queue(HASH.current['bybit'], dataConverter('bybit', bybit_orders), 20);
+       data = Object.values(HASH.current).flat(); 
     };
     
     return(
         <div style={{height: '600px'}}>
-            {data.length > 0 ?
+            {data !== undefined ?
                 <div style={{height:'100%'}}>
-                    <ResponsiveSwarmPlot   
+                    <ResponsiveSwarmPlotCanvas    
                         data={data}
-                        groups={[ 'bitstamp', 'ftx','kraken','coinbase','bitfinex','bybit', 'binance']}
+                        groups={[ 'bitstamp', 'ftx','kraken', 'binance']}//,'coinbase','bitfinex','bybit']}
                         value="bidPrice"
                         valueFormat="$.2f"
                         valueScale={{ type: 'linear', min: Math.min(...data.map(m=>m['bidPrice']))-20 , max: Math.max(...data.map(m=>m['bidPrice']))+20, reverse: false }}

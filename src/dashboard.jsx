@@ -44,7 +44,7 @@ export const Dashboard = () => {
         
     };
     
-    let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{debugger
+    let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{
         return (
             <li key={Object.values.length}>
                 {ob};
