@@ -21,6 +21,7 @@ const randomeIdGenerator = (token) => (
 );
 
 const dataConverter = (exchange, order) => {
+    
     return {
         "id": randomeIdGenerator(exchange),
         "group": exchange,
@@ -31,14 +32,12 @@ const dataConverter = (exchange, order) => {
     }
 };
 
-
-
 export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_orders, ftx_orders, coinbase_orders, bitfinex_orders, bybit_orders}) => {
 
     let data;
-    let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]})
+    let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]});
 
-    if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined)// && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
+    if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
     {
         
         HASH.current['bitstamp'] = queue(HASH.current['bitstamp'], dataConverter('bitstamp', bitstamp_orders), 20);
@@ -52,12 +51,12 @@ export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_ord
     };
     
     return(
-        <div style={{height: '600px'}}>
+        <div style={{height: '600px', width: '100%'}}>
             {data !== undefined ?
                 <div style={{height:'100%'}}>
                     <ResponsiveSwarmPlotCanvas    
                         data={data}
-                        groups={[ 'bitstamp', 'ftx','kraken', 'binance']}//,'coinbase','bitfinex','bybit']}
+                        groups={[ 'bitstamp', 'ftx','kraken', 'binance','coinbase','bitfinex','bybit']}
                         value="bidPrice"
                         valueFormat="$.2f"
                         valueScale={{ type: 'linear', min: Math.min(...data.map(m=>m['bidPrice']))-20 , max: Math.max(...data.map(m=>m['bidPrice']))+20, reverse: false }}
@@ -80,30 +79,13 @@ export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_ord
                             ]
                         }}
                         margin={{ top: 80, right: 100, bottom: 80, left: 100 }}
-                        axisTop={{
-                            orient: 'top',
-                            tickSize: 10,
-                            tickPadding: 5,
-                            tickRotation: 0,
-                            legend: 'group if vertical, price if horizontal',
-                            legendPosition: 'middle',
-                            legendOffset: -46
-                        }}
-                        axisRight={{
-                            orient: 'right',
-                            tickSize: 10,
-                            tickPadding: 5,
-                            tickRotation: 0,
-                            legend: 'price if vertical, group if horizontal',
-                            legendPosition: 'middle',
-                            legendOffset: 76
-                        }}
+
                         axisBottom={{
                             orient: 'bottom',
                             tickSize: 10,
                             tickPadding: 5,
                             tickRotation: 0,
-                            legend: 'group if vertical, price if horizontal',
+                            legend: 'Exchanges',
                             legendPosition: 'middle',
                             legendOffset: 46
                         }}
@@ -112,7 +94,7 @@ export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_ord
                             tickSize: 10,
                             tickPadding: 5,
                             tickRotation: 0,
-                            legend: 'price if vertical, group if horizontal',
+                            legend: 'Price(USD)',
                             legendPosition: 'middle',
                             legendOffset: -76
                         }}

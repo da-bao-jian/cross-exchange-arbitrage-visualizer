@@ -31,6 +31,7 @@ export const Dashboard = () => {
 
         setTokenConnections(tokenConnections[token] = [(
             <OrderBook 
+                token={token}
                 bitstampSocket={bitstampSocket} 
                 bitmexSocket={bitmexSocket} 
                 ftxSocket={ftxSocket}

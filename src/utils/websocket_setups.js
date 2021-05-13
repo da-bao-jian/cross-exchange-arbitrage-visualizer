@@ -28,8 +28,8 @@ export const bitstampSocketSetup = (currencyPair) =>
 			scan((accumulatedData, nextItem) => {
 				if (Object.keys(nextItem["data"]).length > 0) {
 					//initialize a hash and setting keys asks and bids with orders on top of both sides
-					accumulatedData["bids"] = nextItem["data"]["bids"][0];
-					accumulatedData["asks"] = nextItem["data"]["asks"][0];
+					accumulatedData["bids"] = [parseFloat(nextItem["data"]["bids"][0][0]),parseFloat(nextItem["data"]["bids"][0][1])];
+					accumulatedData["asks"] = [parseFloat(nextItem["data"]["asks"][0][0]),parseFloat(nextItem["data"]["bids"][0][1])];
 				}
 				return accumulatedData;
 			}, {}),
@@ -59,12 +59,12 @@ export const bitmexSocketSetup = (currencyPair) =>
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				accumulatedData["bids"] = [
-					nextItem["data"][0]["bidPrice"],
-					nextItem[Math.floor(Math.random() * (0.1 - 0.05) + 0.05)],
+					parseFloat(nextItem["data"][0]["bidPrice"]),
+					1000/parseFloat(nextItem["data"][0]["bidPrice"]),
 				]; //on Bitmex, size 1 = 1USD so size/price denotes unit number of 'token' on the book
 				accumulatedData["asks"] = [
-					nextItem["data"][0]["askPrice"],
-					nextItem[Math.floor(Math.random() * (0.1 - 0.05) + 0.05)],
+					parseFloat(nextItem["data"][0]["askPrice"]),
+					1000/parseFloat(nextItem["data"][0]["askPrice"]),
 				];
 				return accumulatedData;
 			}, {}),
@@ -88,12 +88,12 @@ export const ftxSocketSetup = (currencyPair) =>
 			scan((accumulatedData, nextItem) => {
 				if (Object.keys(nextItem["data"]).length > 0) {
 					accumulatedData["bids"] = [
-						nextItem["data"]["bid"],
-						nextItem["data"]["bidSize"],
+						parseFloat(nextItem["data"]["bid"]),
+						parseFloat(nextItem["data"]["bidSize"]),
 					];
 					accumulatedData["asks"] = [
-						nextItem["data"]["ask"],
-						nextItem["data"]["askSize"],
+						parseFloat(nextItem["data"]["ask"]),
+						parseFloat(nextItem["data"]["askSize"]),
 					];
 				}
 				return accumulatedData;
@@ -128,12 +128,12 @@ export const binanceSocketSetup = (currencyPair, id) => (
         scan((accumulatedData, nextItem) => {
             if (Object.keys(nextItem["data"]).length > 0) {
                 accumulatedData["bids"] = [
-                    nextItem["data"]["b"],
-                    nextItem["data"]["B"],
+                    parseFloat(nextItem["data"]["b"]),
+                   parseFloat(nextItem["data"]["B"]),
                 ];
                 accumulatedData["asks"] = [
-                    nextItem["data"]["a"],
-                    nextItem["data"]["A"],
+                    parseFloat(nextItem["data"]["a"]),
+                    parseFloat(nextItem["data"]["A"]),
                 ];
             }
             return accumulatedData;
@@ -169,8 +169,8 @@ export const coinbaseSocketSetup = (currencyPair) => {
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				if (Object.keys(nextItem).length > 0) {
-					accumulatedData["bids"] = [nextItem['best_bid'], Math.floor(Math.random() * (0.1 - 0.05) + 0.05)];
-					accumulatedData["asks"] = [nextItem['best_ask'], Math.floor(Math.random() * (0.1 - 0.05) + 0.05)];
+					accumulatedData["bids"] = [parseFloat(nextItem['best_bid']), 1000/parseFloat(nextItem['best_bid'])];
+					accumulatedData["asks"] = [parseFloat(nextItem['best_ask']), 1000/parseFloat(nextItem['best_ask'])];
 				} 
                 
 				return accumulatedData;
@@ -207,8 +207,8 @@ export const krakenSocketSetup = (currencyPair) =>
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				if (nextItem.length > 0) {
-					accumulatedData["bids"] = [nextItem[1]["b"][0], nextItem[1]["b"][1]];
-					accumulatedData["asks"] = [nextItem[1]["a"][0], nextItem[1]["a"][1]];
+					accumulatedData["bids"] = [parseFloat(nextItem[1]["b"][0]), parseFloat(nextItem[1]["b"][1])];
+					accumulatedData["asks"] = [parseFloat(nextItem[1]["a"][0]), parseFloat(nextItem[1]["a"][1])];
 				}
 				return accumulatedData;
 			}, {}),
@@ -241,8 +241,8 @@ export const bitfinexSocketSetup = (currencyPair) => {
 		.pipe(
 			scan((accumulatedData, nextItem) => {
 				if (nextItem.length > 0 && nextItem[1] !== 'hb') {
-					accumulatedData["bids"] = [nextItem[1][0], 0.2];
-					accumulatedData["asks"] = [nextItem[1][2], 0.2];
+					accumulatedData["bids"] = [parseFloat(nextItem[1][0]), 1000/parseFloat(nextItem[1][0])];
+					accumulatedData["asks"] = [parseFloat(nextItem[1][2]), 1000/parseFloat(nextItem[1][2])];
 				}
 				return accumulatedData;
 			}, {}),
@@ -278,12 +278,12 @@ export const bybitSocketSetup = (currencyPair) => {
 						.slice(0, 20);
 
 					accumulatedData["bids"] = [ 
-                        bids[bids.length - 1]['price'],
-						bids[bids.length - 1]['size']/bids[bids.length - 1]['price']
+                        parseFloat(bids[bids.length - 1]['price']),
+						parseFloat(bids[bids.length - 1]['size']/bids[bids.length - 1]['price']),
 					];
 					accumulatedData["asks"] = [
-                        asks[0]['price'],
-						asks[0]['size']/asks[0]['price']
+                        parseFloat(asks[0]['price']),
+						parseFloat(asks[0]['size']/asks[0]['price']),
                     ];
 				} else if (
 					nextItem["type"] === "delta" &&
@@ -325,16 +325,16 @@ export const bybitSocketSetup = (currencyPair) => {
 						buy_side.length > 0 ? (bids[bids.length - 2] = buy_side[0]) : null;
 					}
 					accumulatedData["bids"] = [
-                        bids[bids.length - 1]['price'],
-						bids[bids.length - 1]['size']/bids[bids.length - 1]['price']
+                        parseFloat(bids[bids.length - 1]['price']),
+						parseFloat(bids[bids.length - 1]['size']/bids[bids.length - 1]['price'])
 					];
 					accumulatedData["asks"] = [
-                        asks[0]['price'],
-						asks[0]['size']/asks[0]['price']
+                       parseFloat( asks[0]['price']),
+                       parseFloat(asks[0]['size']/asks[0]['price'])
                     ];
                     
                 };
-                
+                 
 				return accumulatedData;
 			}, {}),
 			retryWhen((err) => {

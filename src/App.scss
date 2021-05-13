@@ -1,4 +1,26 @@
 .order-container {
   display: flex;
+  width: 40%;
+};
+.container{
+  display: flex;
+};
+table {
+  border-collapse: collapse;
   width: 100%;
+  text-align: center;
+};
+.plot{
+    width: 60%;
+};
+
+td,
+th {
+  padding: 6px;
+};
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+};
+tr:hover {
+  background-color: #ddd;
 };

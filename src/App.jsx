@@ -31,6 +31,7 @@ const App = () => {
             <h2>Crypto Order Book </h2>
             <div>
                  <OrderBook 
+                    token={'BTC'}
                     bitstampSocket={bitstampSocket1} 
                     bitmexSocket={bitmexSocket1} 
                     ftxSocket={ftxSocket1}
