@@ -1,4 +1,7 @@
-
+To run on local machine
+```
+npm install && npm run start
+```
 ![gif](https://github.com/dabaojian1992/cross-exchange-arbitrage-visualizer/blob/master/new_gif.gif)
 
 * real time limit orderbook data streams multiplexing based on RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket)
