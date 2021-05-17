@@ -1,4 +1,3 @@
-  
 import React, { useState, useEffect } from 'react';
 import OrderBook from './ob';
 import './App.scss';
@@ -14,9 +13,7 @@ import {symbols} from './utils/symbols';
 
 export const Dashboard = () => {
 
-
     const [tokenConnections, setTokenConnections] = useState({})
-
 
     function createNewOrderbook(token, binanceId){          
 
@@ -42,7 +39,6 @@ export const Dashboard = () => {
                 bybitSocket={bybitSocket}
             />
         )]);
-        
     };
     
     let obList = Object.values(tokenConnections).length > 0 ? Object.values(tokenConnections).map((ob)=>{
@@ -57,7 +53,7 @@ export const Dashboard = () => {
         <div>
             <button type="button" onClick={()=>createNewOrderbook('ETH',2)}>ETH</button>
             <ul>
-                {obList};
+                {obList}
             </ul>
         </div>
     );

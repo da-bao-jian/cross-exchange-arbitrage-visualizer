@@ -10,9 +10,8 @@ const queue = (store, ele, capacity) => {
     !store.map((order)=>(order['bidSize'])).includes(ele['bidSize'])||
     !store.map((order)=>(order['askSize'])).includes(ele['askSize'])
   ){
-    
     store.push(ele)
-  }
+  };
   return store;
 };
 
@@ -21,7 +20,6 @@ const randomeIdGenerator = (token) => (
 );
 
 const dataConverter = (exchange, order) => {
-    
     return {
         "id": randomeIdGenerator(exchange),
         "group": exchange,
@@ -32,13 +30,16 @@ const dataConverter = (exchange, order) => {
     }
 };
 
-export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_orders, ftx_orders, coinbase_orders, bitfinex_orders, bybit_orders}) => {
-
+export const Plot = (props) => {
+// {bitstamp_orders, bitmex_orders, binance_orders, kraken_orders, ftx_orders, coinbase_orders, bitfinex_orders, bybit_orders
     let data;
     let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]});
-
-    if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
+    let exchanges = Object.entries(props).filter((e)=>e[1]!==undefined);
+    
+    // if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
+    if(exchanges.length > 0) 
     {
+        debugger
         
         HASH.current['bitstamp'] = queue(HASH.current['bitstamp'], dataConverter('bitstamp', bitstamp_orders), 20);
         HASH.current['binance'] = queue(HASH.current['binance'], dataConverter('binance', binance_orders), 20);
@@ -47,7 +48,7 @@ export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_ord
         HASH.current['coinbase'] = queue(HASH.current['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
         HASH.current['bitfinex'] = queue(HASH.current['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
         HASH.current['bybit'] = queue(HASH.current['bybit'], dataConverter('bybit', bybit_orders), 20);
-       data = Object.values(HASH.current).flat(); 
+        data = Object.values(HASH.current).flat(); 
     };
     
     return(
@@ -105,5 +106,4 @@ export const Plot = ({bitstamp_orders, bitmex_orders, binance_orders, kraken_ord
             : null}
         </div>
     )
-
 };

@@ -3,13 +3,14 @@ import {Plot} from './plot.jsx';
 
 let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket, coinbaseSocket, krakenSocket, bitfinexSocket, bybitSocket }) => {
   let [bitstamp_orders, setBitstamp_orders] = useState();
-  let [bitmex_orders, setBitmex_orders] = useState();
+  // let [bitmex_orders, setBitmex_orders] = useState();
   let [ftx_orders, setFtx_orders] = useState();
   let [binance_orders, setBinance_orders] = useState(); 
   let [coinbase_orders, setCoinbase_orders] = useState(); 
   let [kraken_orders, setKraken_orders] = useState();
   let [bitfinex_orders, setBitfinex_orders] = useState();
   let [bybit_orders, setBybit_orders] = useState();
+  let [exchangeList, setExchangeList] = useState({'bitstamp':false, 'bitmex':false, 'binance':false,'ftx':false, 'kraken':false, 'coinbase':false, 'bitfinex':false, 'bybit':false});
 
   function socketSubscription(socket, changeState){
     setTimeout(() => {
@@ -44,6 +45,13 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
   },[]);
 
 
+  const toggleExchange = (exchange) => {
+    setExchangeList(() => {
+      exchangeList[exchange] = exchangeList[exchange] ? false : true;
+      return exchangeList
+    });
+  };
+
   const orderHead = (title) => (
     <thead>
       <tr>
@@ -61,14 +69,14 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
       <div className='container'>
         <div className='plot'>
             <Plot 
-              bitstamp_orders={bitstamp_orders} 
+              bitstamp_orders= {exchangeList['bitstamp'] ? bitstamp_orders : undefined}
               // bitmex_orders={bitmex_orders} 
-              kraken_orders={kraken_orders} 
-              ftx_orders={ftx_orders} 
-              binance_orders={binance_orders}
-              coinbase_orders={coinbase_orders}
-              bitfinex_orders={bitfinex_orders}
-              bybit_orders={bybit_orders}
+              kraken_orders={exchangeList['kraken'] ? kraken_orders : undefined}
+              ftx_orders={exchangeList['ftx'] ? ftx_orders : undefined}
+              binance_orders={exchangeList['binance'] ? binance_orders : undefined}
+              coinbase_orders={exchangeList['coinbase'] ? coinbase_orders : undefined}
+              bitfinex_orders={exchangeList['bitfinex'] ? bitfinex_orders : undefined}
+              bybit_orders={exchangeList['bybit'] ? bybit_orders : undefined}
             />
         </div>
         <div className="order-container">
@@ -83,7 +91,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
             </thead>
             <tbody>
               <tr key='bitstamp'>
-                <td>
+                <td onClick={() => toggleExchange('bitstamp')}>
                   Bitstamp
                 </td>
               </tr>
