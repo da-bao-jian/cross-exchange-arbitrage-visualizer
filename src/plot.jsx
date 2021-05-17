@@ -34,8 +34,9 @@ export const Plot = (props) => {
     let data;
     let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]});
     let exchanges = Object.entries(props).filter((e)=>e[1]!==undefined);
+    let displayList = Object.keys(props).filter((e)=>(props[e]!==undefined));
     
-    if(exchanges.length > 0)//change the code below to accomodate props change; when the state changes from true to false, corresponding array in HASH needs to be changed as well
+    if(exchanges.length > 0)
     {
         exchanges.map((exchange)=>{
             HASH.current[exchange[0]] = queue(HASH.current[exchange[0]], dataConverter(exchange[0], exchange[1][0]), 20);
@@ -56,7 +57,7 @@ export const Plot = (props) => {
                 <div style={{height:'100%'}}>
                     <ResponsiveSwarmPlotCanvas    
                         data={data}
-                        groups={[ 'bitstamp', 'ftx','kraken', 'binance','coinbase','bitfinex','bybit']}
+                        groups={displayList}
                         value="bidPrice"
                         valueFormat="$.2f"
                         valueScale={{ type: 'linear', min: Math.min(...data.map(m=>m['bidPrice']))-20 , max: Math.max(...data.map(m=>m['bidPrice']))+20, reverse: false }}
