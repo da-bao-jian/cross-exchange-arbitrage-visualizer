@@ -69,14 +69,14 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
       <div className='container'>
         <div className='plot'>
             <Plot 
-              bitstamp_orders= {exchangeList['bitstamp'] ? bitstamp_orders : undefined}
+              bitstamp= {exchangeList['bitstamp'] ? bitstamp_orders : undefined}
               // bitmex_orders={bitmex_orders} 
-              kraken_orders={exchangeList['kraken'] ? kraken_orders : undefined}
-              ftx_orders={exchangeList['ftx'] ? ftx_orders : undefined}
-              binance_orders={exchangeList['binance'] ? binance_orders : undefined}
-              coinbase_orders={exchangeList['coinbase'] ? coinbase_orders : undefined}
-              bitfinex_orders={exchangeList['bitfinex'] ? bitfinex_orders : undefined}
-              bybit_orders={exchangeList['bybit'] ? bybit_orders : undefined}
+              kraken={exchangeList['kraken'] ? kraken_orders : undefined}
+              ftx={exchangeList['ftx'] ? ftx_orders : undefined}
+              binance={exchangeList['binance'] ? binance_orders : undefined}
+              coinbase={exchangeList['coinbase'] ? coinbase_orders : undefined}
+              bitfinex={exchangeList['bitfinex'] ? bitfinex_orders : undefined}
+              bybit={exchangeList['bybit'] ? bybit_orders : undefined}
             />
         </div>
         <div className="order-container">
@@ -96,32 +96,32 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                 </td>
               </tr>
               <tr key='ftx'>
-                <td>
+                <td onClick={() => toggleExchange('ftx')}>
                 FTX
                 </td>
               </tr>
               <tr key='kraken'>
-                <td>
+                <td onClick={() => toggleExchange('kraken')}>
                 Kraken
                 </td>
               </tr>
               <tr key='coinbase'>
-                <td>
+                <td onClick={() => toggleExchange('coinbase')}>
                 Coinbase
                 </td>
               </tr>              
               <tr key='binance'>
-                <td>
+                <td onClick={() => toggleExchange('binance')}>
                 Binance
                 </td>
               </tr>
               <tr key='bitfinex'>
-                <td>
+                <td onClick={() => toggleExchange('bitfinex')}>
                 Bitfinex
                 </td>
               </tr>
               <tr key='bybit'>
-                <td>
+                <td onClick={() => toggleExchange('bybit')}>
                 Bybit
                 </td>
               </tr>

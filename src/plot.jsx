@@ -23,31 +23,30 @@ const dataConverter = (exchange, order) => {
     return {
         "id": randomeIdGenerator(exchange),
         "group": exchange,
-        "bidPrice": parseFloat(order[0]['bids'][0]),
-        "bidSize": parseFloat(order[0]['bids'][1]),
-        "askPrice": parseFloat(order[0]['asks'][0]), 
-        "askSize": parseFloat(order[0]['asks'][1])
+        "bidPrice": parseFloat(order['bids'][0]),
+        "bidSize": parseFloat(order['bids'][1]),
+        "askPrice": parseFloat(order['asks'][0]), 
+        "askSize": parseFloat(order['asks'][1])
     }
 };
 
 export const Plot = (props) => {
-// {bitstamp_orders, bitmex_orders, binance_orders, kraken_orders, ftx_orders, coinbase_orders, bitfinex_orders, bybit_orders
     let data;
     let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]});
     let exchanges = Object.entries(props).filter((e)=>e[1]!==undefined);
     
-    // if(bitstamp_orders !== undefined && ftx_orders !== undefined && kraken_orders!==undefined && binance_orders!==undefined && coinbase_orders!==undefined && bitfinex_orders!==undefined && bybit_orders!== undefined && HASH !== undefined)
-    if(exchanges.length > 0) 
+    if(exchanges.length > 0)//change the code below to accomodate props change; when the state changes from true to false, corresponding array in HASH needs to be changed as well
     {
+        exchanges.map((exchange)=>{
+            HASH.current[exchange[0]] = queue(HASH.current[exchange[0]], dataConverter(exchange[0], exchange[1][0]), 20);
+        });
         debugger
-        
-        HASH.current['bitstamp'] = queue(HASH.current['bitstamp'], dataConverter('bitstamp', bitstamp_orders), 20);
-        HASH.current['binance'] = queue(HASH.current['binance'], dataConverter('binance', binance_orders), 20);
-        HASH.current['ftx'] = queue(HASH.current['ftx'], dataConverter('ftx', ftx_orders), 20);
-        HASH.current['kraken'] = queue(HASH.current['kraken'], dataConverter('kraken', kraken_orders), 20);
-        HASH.current['coinbase'] = queue(HASH.current['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
-        HASH.current['bitfinex'] = queue(HASH.current['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
-        HASH.current['bybit'] = queue(HASH.current['bybit'], dataConverter('bybit', bybit_orders), 20);
+        // HASH.current['binance'] = queue(HASH.current['binance'], dataConverter('binance', binance_orders), 20);
+        // HASH.current['ftx'] = queue(HASH.current['ftx'], dataConverter('ftx', ftx_orders), 20);
+        // HASH.current['kraken'] = queue(HASH.current['kraken'], dataConverter('kraken', kraken_orders), 20);
+        // HASH.current['coinbase'] = queue(HASH.current['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
+        // HASH.current['bitfinex'] = queue(HASH.current['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
+        // HASH.current['bybit'] = queue(HASH.current['bybit'], dataConverter('bybit', bybit_orders), 20);
         data = Object.values(HASH.current).flat(); 
     };
     
@@ -80,7 +79,6 @@ export const Plot = (props) => {
                             ]
                         }}
                         margin={{ top: 80, right: 100, bottom: 80, left: 100 }}
-
                         axisBottom={{
                             orient: 'bottom',
                             tickSize: 10,
