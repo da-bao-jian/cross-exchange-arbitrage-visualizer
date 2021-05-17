@@ -1,5 +1,5 @@
 import { ResponsiveSwarmPlot, ResponsiveSwarmPlotCanvas } from '@nivo/swarmplot';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const queue = (store, ele, capacity) => {
   if(store.length >= capacity){
@@ -33,24 +33,22 @@ const dataConverter = (exchange, order) => {
 export const Plot = (props) => {
     let data;
     let HASH = useRef({'bitstamp':[], 'bitmex':[], 'binance':[],'ftx':[], 'kraken':[], 'coinbase':[], 'bitfinex':[], 'bybit':[]});
-    let exchanges = Object.entries(props).filter((e)=>e[1]!==undefined);
+    let exchanges = Object.entries(props).filter((e)=> {
+        return e[1]!==undefined
+    });
+
     let displayList = Object.keys(props).filter((e)=>(props[e]!==undefined));
-    
+
     if(exchanges.length > 0)
     {
         exchanges.map((exchange)=>{
-            HASH.current[exchange[0]] = queue(HASH.current[exchange[0]], dataConverter(exchange[0], exchange[1][0]), 20);
+            HASH.current[exchange[0]] = queue(HASH.current[exchange[0]], dataConverter(exchange[0], exchange[1][0]), 10);
         });
-        debugger
-        // HASH.current['binance'] = queue(HASH.current['binance'], dataConverter('binance', binance_orders), 20);
-        // HASH.current['ftx'] = queue(HASH.current['ftx'], dataConverter('ftx', ftx_orders), 20);
-        // HASH.current['kraken'] = queue(HASH.current['kraken'], dataConverter('kraken', kraken_orders), 20);
-        // HASH.current['coinbase'] = queue(HASH.current['coinbase'], dataConverter('coinbase', coinbase_orders), 20);
-        // HASH.current['bitfinex'] = queue(HASH.current['bitfinex'], dataConverter('bitfinex', bitfinex_orders), 20);
-        // HASH.current['bybit'] = queue(HASH.current['bybit'], dataConverter('bybit', bybit_orders), 20);
-        data = Object.values(HASH.current).flat(); 
+        data = Object.values(HASH.current).filter(e=>{
+            return e[0]!==undefined && displayList.includes(e[0]['group'])
+        }).flat();
     };
-    
+   
     return(
         <div style={{height: '600px', width: '100%'}}>
             {data !== undefined ?
@@ -60,7 +58,7 @@ export const Plot = (props) => {
                         groups={displayList}
                         value="bidPrice"
                         valueFormat="$.2f"
-                        valueScale={{ type: 'linear', min: Math.min(...data.map(m=>m['bidPrice']))-20 , max: Math.max(...data.map(m=>m['bidPrice']))+20, reverse: false }}
+                        valueScale={{ type: 'linear', min: Math.min(...data.map(m=>m['bidPrice']))-10 , max: Math.max(...data.map(m=>m['bidPrice']))+10, reverse: false }}
                         size={{ key: 'bidSize', values: [ 4, 20 ], sizes: [ 24, 80 ] }}
                         gap={33}
                         spacing={8}

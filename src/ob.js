@@ -134,7 +134,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ?  
                   <>
                     <td id='bids'>{bitstamp_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{bitstamp_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{bitstamp_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -143,7 +143,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {ftx_orders !== undefined && ftx_orders.length > 0 ?  
                   <>
                     <td id='bids'>{ftx_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{ftx_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{ftx_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -152,7 +152,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {kraken_orders !== undefined && kraken_orders.length > 0 ?  
                   <>
                     <td id='bids'>{kraken_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{kraken_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{kraken_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -161,7 +161,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {coinbase_orders !== undefined && coinbase_orders.length > 0 ?  
                   <>
                     <td id='bids'>{coinbase_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{coinbase_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{coinbase_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -170,7 +170,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {binance_orders !== undefined && binance_orders.length > 0 ?  
                   <>
                     <td id='bids'>{binance_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{binance_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{binance_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -178,7 +178,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bitfinex_orders !== undefined && bitfinex_orders.length > 0 ?  
                   <>
                     <td id='bids'>{bitfinex_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{bitfinex_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{bitfinex_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -187,7 +187,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bybit_orders !== undefined && bybit_orders.length > 0 ?  
                   <>
                     <td id='bids'>{bybit_orders[0]['bids'][0].toFixed(2)}</td> 
-                    <td id='bids'>{bybit_orders[0]['bids'][1].toFixed(2)}</td> 
+                    <td id='bids'>{bybit_orders[0]['bids'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -200,7 +200,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bitstamp_orders !== undefined && bitstamp_orders.length > 0 ?  
                   <>
                     <td id='asks'>{bitstamp_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{bitstamp_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{bitstamp_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -209,7 +209,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {ftx_orders !== undefined && ftx_orders.length > 0 ?  
                   <>
                     <td id='asks'>{ftx_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{ftx_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{ftx_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -218,7 +218,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {kraken_orders !== undefined && kraken_orders.length > 0 ?  
                   <>
                     <td id='asks'>{kraken_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{kraken_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{kraken_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -227,7 +227,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {coinbase_orders !== undefined && coinbase_orders.length > 0 ?  
                   <>
                     <td id='asks'>{coinbase_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{coinbase_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{coinbase_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -236,7 +236,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {binance_orders !== undefined && binance_orders.length > 0 ?  
                   <>
                     <td id='asks'>{binance_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{binance_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{binance_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -244,7 +244,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bitfinex_orders !== undefined && bitfinex_orders.length > 0 ?  
                   <>
                     <td id='asks'>{bitfinex_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{bitfinex_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{bitfinex_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
@@ -253,7 +253,7 @@ let OrderBook = ({token, bitstampSocket, bitmexSocket, ftxSocket, binanceSocket,
                   {bybit_orders !== undefined && bybit_orders.length > 0 ?  
                   <>
                     <td id='asks'>{bybit_orders[0]['asks'][0].toFixed(2)}</td> 
-                    <td id='asks'>{bybit_orders[0]['asks'][1].toFixed(2)}</td> 
+                    <td id='asks'>{bybit_orders[0]['asks'][1].toFixed(3)}</td> 
                   </>
                     : null}
               </tr>             
