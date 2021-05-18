@@ -2,9 +2,11 @@ To run on local machine
 ```
 npm install && npm run start
 ```
-![gif](https://github.com/dabaojian1992/cross-exchange-arbitrage-visualizer/blob/master/new_gif.gif)
+![gif](https://github.com/dabaojian1992/cross-exchange-arbitrage-visualizer/blob/master/gif.gif)
 
 *multiple tokens' live data streams are multiplexed simultaneously using RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket);
+
+*dots are the past 3 best bid/ask prices;
 
 *dot size is proportional to order size;
 
