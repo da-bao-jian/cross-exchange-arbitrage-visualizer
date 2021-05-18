@@ -15,6 +15,7 @@ npm install && npm run start
 #### *Not investment advice
 
 ## Road ahead
+* will support more tokens
 
 * For a more responsive user experience, I will enable choosing exchanges per user's selection, as displaying all 7 exchanges for multiple tokens simultaneously drastically slows down the updating frequency;
 
