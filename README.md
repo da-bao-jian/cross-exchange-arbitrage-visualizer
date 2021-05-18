@@ -6,7 +6,7 @@ npm install && npm run start
 
 *multiple tokens' live data streams are multiplexed simultaneously using RxJS's [Websocket Subject](https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket);
 
-*dots are the past 3 best bid/ask prices;
+*dots are the current best bid/ask offers and last best bid/ask offers on the book;
 
 *dot size is proportional to order size;
 
