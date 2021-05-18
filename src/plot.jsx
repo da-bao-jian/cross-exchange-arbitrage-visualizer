@@ -40,7 +40,7 @@ export const Plot = (props) => {
         bidData = Object.values(bidHash.current).filter(e=>(e[0]!==undefined && displayList.includes(e[0]['group']))).flat();
         askData = Object.values(askHash.current).filter(e=>(e[0]!==undefined && displayList.includes(e[0]['group']))).flat();
         data = bidData.concat(askData);
-        debugger
+        
     };
 
     return(
